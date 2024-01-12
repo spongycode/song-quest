@@ -8,4 +8,8 @@ interface AuthRepository {
         fullName: String, username: String,
         email: String, password: String
     ): ApiResponse<UserModel>?
+
+    suspend fun login(
+        emailOrUsername: String, password: String
+    ): ApiResponse<UserModel>?
 }

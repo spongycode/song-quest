@@ -29,8 +29,22 @@ object ValidationHelper {
             return "Email is required"
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
             return "Email not valid"
+        }
+        return null
+    }
+
+    fun validateEmailOrUsername(emailOrUsername: String): String? {
+        val trimmedEmailOrUsername = emailOrUsername.trim()
+        if (trimmedEmailOrUsername.isBlank()) {
+            return "Email or Password is required"
+        }
+
+        if (validateUsername(trimmedEmailOrUsername) != null &&
+            validateEmail(trimmedEmailOrUsername) != null
+        ) {
+            return "Email or username is not valid"
         }
         return null
     }

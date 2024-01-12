@@ -1,6 +1,5 @@
 package com.spongycode.songquest.data.repository
 
-import android.util.Log
 import com.spongycode.songquest.data.model.ApiResponse
 import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.domain.repository.AuthRepository
@@ -35,11 +34,30 @@ class AuthRepositoryImpl @Inject constructor(
                     )
                 )
             }
-            val res1 =  res.body<ApiResponse<UserModel>>()
-            Log.d("MAINVIEWMIDEL", res1.toString())
-            return res1
+            res.body<ApiResponse<UserModel>>()
         } catch (err: Exception) {
-            Log.d("MAINVIEWMIDEL", err.message.toString())
+            null
+        }
+    }
+
+    override suspend fun login(
+        emailOrUsername: String,
+        password: String
+    ): ApiResponse<UserModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/users/login")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UserModel(
+                        username = emailOrUsername,
+                        email = emailOrUsername,
+                        password = password
+                    )
+                )
+            }
+            res.body<ApiResponse<UserModel>>()
+        } catch (err: Exception) {
             null
         }
     }

@@ -1,7 +1,6 @@
-package com.spongycode.songquest.screen.auth.login
+package com.spongycode.songquest.screen.auth.forgot_password
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -28,18 +26,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
 import com.spongycode.songquest.screen.auth.components.CustomTextField
+import com.spongycode.songquest.screen.auth.forgot_password.ForgotPasswordState.*
 import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
@@ -49,14 +43,12 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(
+fun ForgotPasswordScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
-    val emailOrUsername = viewModel.emailOrUsername.value
-    val password = viewModel.password.value
-    val isPasswordVisible = viewModel.isPasswordVisible.value
-    val loginState = viewModel.loginState.value
+    val email = viewModel.email.value
+    val forgotPasswordState = viewModel.forgotPasswordState.value
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -86,7 +78,7 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
-            Text(text = "Login", fontSize = 35.sp, fontWeight = FontWeight.W800)
+            Text(text = "Forgot Password", fontSize = 35.sp, fontWeight = FontWeight.W800)
 
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
@@ -101,39 +93,14 @@ fun LoginScreen(
                 ) {
 
                     CustomTextField(
-                        text = emailOrUsername,
-                        labelText = "Username/Email",
-                        placeHolderText = "Username or Email",
+                        text = email,
+                        labelText = "Email",
+                        placeHolderText = "Email",
                         shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
                         singleLine = true,
-                        onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmailOrUsername(it)) },
+                        onValueChange = { viewModel.onEvent(ForgotPasswordEvent.EnteredEmail(it)) },
                     )
 
-                    Spacer(modifier = Modifier.height(Constants.VERY_SMALL_HEIGHT))
-
-                    CustomTextField(
-                        text = password,
-                        labelText = "Password",
-                        placeHolderText = "Password",
-                        shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                        singleLine = true,
-                        isPasswordVisible = isPasswordVisible,
-                        keyboardType = KeyboardType.Password,
-                        onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
-                        onPasswordToggleClick = { viewModel.onEvent(LoginEvent.TogglePasswordVisibility) }
-                    )
-
-                    Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
-
-                    Text(
-                        text = "Forgot password?",
-                        color = Color(0xFF267BC4),
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate("forgotpassword")
-                            }
-                    )
 
                     Spacer(modifier = Modifier.height(Constants.VERY_LARGE_HEIGHT))
 
@@ -141,21 +108,21 @@ fun LoginScreen(
                         onClick = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
-                            if (loginState == LoginState.Success) {
+                            if (forgotPasswordState == Success) {
                                 navController.navigate("home")
-                            } else if (loginState == LoginState.Idle) {
-                                viewModel.onEvent(LoginEvent.Login)
+                            } else if (forgotPasswordState == Idle) {
+                                viewModel.onEvent(ForgotPasswordEvent.Send)
                             }
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = when (loginState) {
-                                LoginState.Checking -> Color.DarkGray
-                                LoginState.Idle -> DecentBlue
-                                LoginState.Error -> DecentRed
-                                LoginState.Success -> DecentGreen
+                            containerColor = when (forgotPasswordState) {
+                                Checking -> Color.DarkGray
+                                Idle -> DecentBlue
+                                Error -> DecentRed
+                                Success -> DecentGreen
                             },
                             contentColor = Color.Black
                         )
@@ -163,48 +130,17 @@ fun LoginScreen(
                         Text(
                             color = Color.White,
                             modifier = Modifier.padding(8.dp),
-                            text = when (loginState) {
-                                LoginState.Checking -> "Logging in..."
-                                LoginState.Idle -> "Login"
-                                LoginState.Error -> stringResource(R.string.registration_error)
-                                LoginState.Success -> stringResource(R.string.start_playing)
+                            text = when (forgotPasswordState) {
+                                Checking -> "Sending..."
+                                Idle -> "Send"
+                                Error -> stringResource(R.string.registration_error)
+                                Success -> "Mail sent 🚀"
                             },
                             fontSize = 15.sp
                         )
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
-
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(color = MaterialTheme.colorScheme.primary)
-                    ) {
-                        append("Don't have an account? ")
-                    }
-                    pushStringAnnotation(
-                        tag = "register",
-                        annotation = "Register here"
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color(0xFF267BC4), textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("Register here")
-                    }
-                    pop()
-                },
-
-                modifier = Modifier
-                    .clickable {
-                        navController.popBackStack()
-                        navController.navigate("register")
-                    }
-            )
         }
     }
 }

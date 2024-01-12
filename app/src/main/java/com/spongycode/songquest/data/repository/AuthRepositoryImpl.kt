@@ -61,6 +61,23 @@ class AuthRepositoryImpl @Inject constructor(
             null
         }
     }
+
+    override suspend fun forgotPasswordEmail(email: String): ApiResponse<UserModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/users/resetpassword")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UserModel(
+                        email = email
+                    )
+                )
+            }
+            res.body<ApiResponse<UserModel>>()
+        } catch (err: Exception) {
+            null
+        }
+    }
 }
 
 

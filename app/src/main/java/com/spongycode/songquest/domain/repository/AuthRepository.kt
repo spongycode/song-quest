@@ -12,4 +12,8 @@ interface AuthRepository {
     suspend fun login(
         emailOrUsername: String, password: String
     ): ApiResponse<UserModel>?
+
+    suspend fun forgotPasswordEmail(
+        email: String
+    ): ApiResponse<UserModel>?
 }

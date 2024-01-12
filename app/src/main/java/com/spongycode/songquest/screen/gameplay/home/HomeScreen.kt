@@ -1,4 +1,4 @@
-package com.spongycode.songquest.screen
+package com.spongycode.songquest.screen.gameplay.home
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

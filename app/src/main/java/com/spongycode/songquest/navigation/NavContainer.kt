@@ -8,15 +8,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.spongycode.songquest.screen.HomeScreen
+import com.spongycode.songquest.screen.gameplay.home.HomeScreen
 import com.spongycode.songquest.screen.auth.forgot_password.ForgotPasswordScreen
 import com.spongycode.songquest.screen.auth.login.LoginScreen
 import com.spongycode.songquest.screen.auth.register.RegisterScreen
+import com.spongycode.songquest.screen.starter.StarterScreen
 
 @Composable
 fun NavContainer(startDestination: String) {
     val navController: NavHostController = rememberNavController()
     NavHost(navController = navController, startDestination = startDestination) {
+        composable(route = "starter") {
+            StarterScreen(navController = navController)
+        }
         composable(route = "register") {
             RegisterScreen(navController = navController)
         }

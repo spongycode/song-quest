@@ -1,6 +1,9 @@
 package com.spongycode.songquest.screen.auth.forgot_password
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -54,6 +57,15 @@ fun ForgotPasswordScreen(
     val focusManager = LocalFocusManager.current
     val snackBarHostState = remember { SnackbarHostState() }
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { }
+    )
+
+    val intent = Intent(Intent.ACTION_MAIN).apply {
+        addCategory(Intent.CATEGORY_APP_EMAIL)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
     LaunchedEffect(key1 = keyboardController) {
         viewModel.snackBarFlow.collectLatest { event ->
             if (event.show) {
@@ -109,7 +121,8 @@ fun ForgotPasswordScreen(
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             if (forgotPasswordState == Success) {
-                                navController.navigate("home")
+                                navController.navigate("login")
+                                launcher.launch(intent)
                             } else if (forgotPasswordState == Idle) {
                                 viewModel.onEvent(ForgotPasswordEvent.Send)
                             }
@@ -134,7 +147,7 @@ fun ForgotPasswordScreen(
                                 Checking -> "Sending..."
                                 Idle -> "Send"
                                 Error -> stringResource(R.string.registration_error)
-                                Success -> "Mail sent 🚀"
+                                Success -> "Check mail 🚀"
                             },
                             fontSize = 15.sp
                         )
@@ -144,4 +157,3 @@ fun ForgotPasswordScreen(
         }
     }
 }
-

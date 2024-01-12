@@ -142,6 +142,7 @@ fun LoginScreen(
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             if (loginState == LoginState.Success) {
+                                navController.popBackStack()
                                 navController.navigate("home")
                             } else if (loginState == LoginState.Idle) {
                                 viewModel.onEvent(LoginEvent.Login)

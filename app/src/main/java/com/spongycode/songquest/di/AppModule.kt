@@ -1,8 +1,12 @@
 package com.spongycode.songquest.di
 
+import android.content.Context
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
+import com.spongycode.songquest.domain.repository.DatastoreRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -26,4 +30,10 @@ object AppModule {
             }
         }
     }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreRepository(
+        @ApplicationContext app: Context
+    ): DatastoreRepository = DatastoreRepositoryImpl(app)
 }

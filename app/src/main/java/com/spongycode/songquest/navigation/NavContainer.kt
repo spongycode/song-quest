@@ -12,6 +12,7 @@ import com.spongycode.songquest.screen.gameplay.home.HomeScreen
 import com.spongycode.songquest.screen.auth.forgot_password.ForgotPasswordScreen
 import com.spongycode.songquest.screen.auth.login.LoginScreen
 import com.spongycode.songquest.screen.auth.register.RegisterScreen
+import com.spongycode.songquest.screen.gameplay.playing.PlayingScreen
 import com.spongycode.songquest.screen.starter.StarterScreen
 
 @Composable
@@ -60,6 +61,10 @@ fun NavContainer(startDestination: String) {
         }
         composable(route = "home") {
             HomeScreen(navController = navController)
+        }
+        composable(route = "playing/{category}") {
+            val category = it.arguments?.getString("category")
+            PlayingScreen(category = category!!, navController = navController)
         }
     }
 }

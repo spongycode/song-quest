@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class CheckAnswerModel(
     val gameId: String? = null,
     val questionId: String? = null,
+    val accessToken: String? = null,
     val optionId: Int? = null,
     val timeTaken: Int? = null,
     val isCorrect: Boolean? = null,

@@ -48,7 +48,16 @@ class GameplayRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveGame() {
-        TODO("Not yet implemented")
+    override suspend fun saveGame(checkAnswerModel: CheckAnswerModel): ApiResponse<PlayingModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/gameplay/save")
+                contentType(ContentType.Application.Json)
+                setBody(checkAnswerModel)
+            }
+            res.body<ApiResponse<PlayingModel>>()
+        } catch (err: Exception) {
+            null
+        }
     }
 }

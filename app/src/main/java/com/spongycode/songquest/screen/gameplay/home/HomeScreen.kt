@@ -23,11 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -144,10 +142,8 @@ fun CategorySelector(
                 navController.navigate("playing/${categoryDisplayCode}")
             },
     ) {
-
         Card(
             modifier = Modifier
-                .shadow(8.dp)
                 .clip(RoundedCornerShape(SMALL_HEIGHT))
         ) {
 
@@ -163,14 +159,15 @@ fun CategorySelector(
         Box(
             modifier = Modifier
                 .width(200.dp)
+                .clip(RoundedCornerShape(SMALL_HEIGHT))
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color(0x99000000)),
+                        colors = listOf(Color.Transparent, Color(0xFF000000)),
                         startY = 0f,
-                        endY = 100f
+                        endY = 150f
                     )
                 )
-                .padding(16.dp)
+                .padding(10.dp)
         ) {
             Text(
                 text = categoryDisplayText,

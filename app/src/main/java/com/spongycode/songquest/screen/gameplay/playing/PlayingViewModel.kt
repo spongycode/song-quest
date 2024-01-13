@@ -3,6 +3,7 @@ package com.spongycode.songquest.screen.gameplay.playing
 import android.media.MediaPlayer
 import androidx.compose.runtime.IntState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +17,10 @@ import com.spongycode.songquest.data.model.gameplay.QuestionModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
-import com.spongycode.songquest.screen.gameplay.playing.PlayingState.*
+import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.Checking
+import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.CorrectAnswer
+import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.Idle
+import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.WrongAnswer
 import com.spongycode.songquest.util.Constants.TOTAL_CHANCE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -43,14 +47,21 @@ class PlayingViewModel @Inject constructor(
     private val _isCorrect = mutableStateOf(false)
     val isCorrect: State<Boolean> = _isCorrect
 
-    private val _game = mutableStateOf(
-        GameModel(
-            null, null, emptyList(), null, null
-        )
-    )
+    private val _currentScore = mutableFloatStateOf(0f)
+    val currentScore: State<Float> = _currentScore
 
-    private val _playingState = mutableStateOf<PlayingState>(Idle)
-    val playingState: State<PlayingState> = _playingState
+
+    private val _game = mutableStateOf(GameModel(null, null, null, emptyList(), null, null))
+    val game: State<GameModel> = _game
+
+    private val _optionTapState = mutableStateOf<OptionTapState>(Idle)
+    val optionTapState: State<OptionTapState> = _optionTapState
+
+    private val _createGameState = mutableStateOf<CreateGameState>(CreateGameState.Fetching)
+    val createGameState: State<CreateGameState> = _createGameState
+
+    private val _isGameOver = mutableStateOf(false)
+    val isGameOver: State<Boolean> = _isGameOver
 
     private val _questions = mutableStateListOf<QuestionModel>()
     val questions: SnapshotStateList<QuestionModel> = _questions
@@ -63,6 +74,7 @@ class PlayingViewModel @Inject constructor(
 
     fun createGame(category: String) {
         _category.value = category
+        _currentScore.floatValue = 0f
         viewModelScope.launch {
             val accessToken = datastoreRepository.getString(accessTokenSession)
             val res = gameplayRepository.createGame(
@@ -74,19 +86,20 @@ class PlayingViewModel @Inject constructor(
             )
 
             if (res?.status == "success") {
-
                 res.data?.game?.let {
                     _game.value = it
                 }
-
                 _questions.clear()
                 _questions.addAll(res.data?.questions ?: emptyList())
+                _createGameState.value = CreateGameState.Success
+            } else {
+                _createGameState.value = CreateGameState.Error
             }
         }
     }
 
     fun checkAnswer(optionId: Int) {
-        _playingState.value = Checking
+        _optionTapState.value = Checking
         viewModelScope.launch {
             val res = gameplayRepository.checkAnswer(
                 CheckAnswerModel(
@@ -99,11 +112,18 @@ class PlayingViewModel @Inject constructor(
             if (res?.status == "success") {
                 _isCorrect.value = res.data?.isCorrect!!
                 if (res.data.isCorrect) {
-                    _playingState.value = CorrectAnswer
+                    _optionTapState.value = CorrectAnswer
                 } else {
-                    _playingState.value = WrongAnswer
-                    _totalLife.intValue--
+                    _optionTapState.value = WrongAnswer
+                    if (_totalLife.intValue == 0) {
+                        mediaPlayer?.release()
+                        _isGameOver.value = true
+                    } else {
+                        _totalLife.intValue--
+                    }
                 }
+
+                _currentScore.floatValue += res.data.increment!!
 
                 delay(2000)
 
@@ -115,7 +135,7 @@ class PlayingViewModel @Inject constructor(
     }
 
     private fun nextQuestion() {
-        _playingState.value = Idle
+        _optionTapState.value = Idle
         _isCorrect.value = false
         _tappedButtonId.intValue = -1
         _currentSongIndex.intValue++

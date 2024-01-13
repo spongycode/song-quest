@@ -12,5 +12,5 @@ interface GameplayRepository {
 
     suspend fun checkAnswer(checkAnswerModel: CheckAnswerModel): ApiResponse<CheckAnswerModel>?
 
-    suspend fun saveGame()
+    suspend fun saveGame(checkAnswerModel: CheckAnswerModel): ApiResponse<PlayingModel>?
 }

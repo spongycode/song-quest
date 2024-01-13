@@ -16,7 +16,7 @@ class DatastoreRepositoryImpl @Inject constructor(
     private val context: Context
 ) : DatastoreRepository {
 
-    override suspend fun getToken(key: Preferences.Key<String>): String? {
+    override suspend fun getString(key: Preferences.Key<String>): String? {
         val preferences = context.preferencesDataStore.data.first()
         val tokenExists = preferences[key] != null
         return if (tokenExists) {
@@ -26,7 +26,7 @@ class DatastoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun storeToken(key: Preferences.Key<String>, value: String) {
+    override suspend fun storeString(key: Preferences.Key<String>, value: String) {
         context.preferencesDataStore.edit { setting ->
             setting[key] = value
         }
@@ -38,5 +38,7 @@ class DatastoreRepositoryImpl @Inject constructor(
         )
         val accessTokenSession = stringPreferencesKey(Constants.ACCESS_TOKEN_SESSION)
         val refreshTokenSession = stringPreferencesKey(Constants.REFRESH_TOKEN_SESSION)
+        val usernameSession = stringPreferencesKey(Constants.USERNAME_SESSION)
+        val emailSession = stringPreferencesKey(Constants.EMAIL_SESSION)
     }
 }

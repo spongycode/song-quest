@@ -14,4 +14,12 @@ val Pink40 = Color(0xFF7D5260)
 val DecentRed = Color(0xFFEA4141)
 val DecentGreen = Color(0xFF21C091)
 val DecentBlue = Color(0xFF6BA3D3)
-val BlueLight = Color(0xFF99A4EE)
+
+val OptionLightBlue = Color(0xFFDCF8FF)
+val OptionDarkBlue = Color(0xFF3EB8D4)
+
+val OptionLightYellow = Color(0xFFFFF2BE)
+val OptionDarkYellow = Color(0xFFFFD000)
+
+val OptionLightRed = Color(0xFFFFDFDC)
+val OptionDarkRed = Color(0xFFFF5341)

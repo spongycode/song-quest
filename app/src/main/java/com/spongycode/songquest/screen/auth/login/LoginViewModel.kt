@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.emailSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.refreshTokenSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.screen.ui_events.SnackBarEvent
@@ -76,13 +78,21 @@ class LoginViewModel @Inject constructor(
                     _password.value
                 )
                 if (res?.status == "success") {
-                    datastoreRepository.storeToken(
+                    datastoreRepository.storeString(
                         key = accessTokenSession,
                         value = res.data?.accessToken.toString()
                     )
-                    datastoreRepository.storeToken(
+                    datastoreRepository.storeString(
                         key = refreshTokenSession,
                         value = res.data?.refreshToken.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = usernameSession,
+                        value = res.data?.user?.username.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = emailSession,
+                        value = res.data?.user?.email.toString()
                     )
                     _loginState.value = LoginState.Success
                 } else {

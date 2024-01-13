@@ -3,7 +3,7 @@ package com.spongycode.songquest.domain.repository
 import androidx.datastore.preferences.core.Preferences
 
 interface DatastoreRepository {
-    suspend fun getToken(key: Preferences.Key<String>): String?
+    suspend fun getString(key: Preferences.Key<String>): String?
 
-    suspend fun storeToken(key: Preferences.Key<String>, value: String)
+    suspend fun storeString(key: Preferences.Key<String>, value: String)
 }

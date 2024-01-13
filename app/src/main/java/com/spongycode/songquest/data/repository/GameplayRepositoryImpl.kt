@@ -1,6 +1,7 @@
 package com.spongycode.songquest.data.repository
 
 import com.spongycode.songquest.data.model.ApiResponse
+import com.spongycode.songquest.data.model.gameplay.CheckAnswerModel
 import com.spongycode.songquest.data.model.gameplay.CreateGameModel
 import com.spongycode.songquest.data.model.gameplay.PlayingModel
 import com.spongycode.songquest.domain.repository.GameplayRepository
@@ -34,8 +35,17 @@ class GameplayRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun checkAnswer() {
-        TODO("Not yet implemented")
+    override suspend fun checkAnswer(checkAnswerModel: CheckAnswerModel): ApiResponse<CheckAnswerModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/gameplay/check")
+                contentType(ContentType.Application.Json)
+                setBody(checkAnswerModel)
+            }
+            res.body<ApiResponse<CheckAnswerModel>>()
+        } catch (err: Exception) {
+            null
+        }
     }
 
     override suspend fun saveGame() {

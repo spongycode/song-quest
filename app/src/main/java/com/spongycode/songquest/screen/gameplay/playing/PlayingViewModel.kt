@@ -17,6 +17,7 @@ import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companio
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
 import com.spongycode.songquest.screen.gameplay.playing.PlayingState.*
+import com.spongycode.songquest.util.Constants.TOTAL_CHANCE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,6 +37,9 @@ class PlayingViewModel @Inject constructor(
     private val _tappedButtonId = mutableIntStateOf(-1)
     val tappedButtonId: IntState = _tappedButtonId
 
+    private val _totalLife = mutableIntStateOf(TOTAL_CHANCE)
+    val totalLife: IntState = _totalLife
+
     private val _isCorrect = mutableStateOf(false)
     val isCorrect: State<Boolean> = _isCorrect
 
@@ -50,6 +54,7 @@ class PlayingViewModel @Inject constructor(
 
     private val _questions = mutableStateListOf<QuestionModel>()
     val questions: SnapshotStateList<QuestionModel> = _questions
+
     private var mediaPlayer: MediaPlayer? = null
 
     init {
@@ -97,6 +102,7 @@ class PlayingViewModel @Inject constructor(
                     _playingState.value = CorrectAnswer
                 } else {
                     _playingState.value = WrongAnswer
+                    _totalLife.intValue--
                 }
 
                 delay(2000)
@@ -121,7 +127,7 @@ class PlayingViewModel @Inject constructor(
             mediaPlayer?.release()
             mediaPlayer = MediaPlayer()
             mediaPlayer?.setDataSource(_questions[index].songUrl)
-            mediaPlayer?.prepare()
+            mediaPlayer?.prepareAsync()
             mediaPlayer?.setOnPreparedListener {
                 mediaPlayer?.start()
                 mediaPlayer?.isLooping = true

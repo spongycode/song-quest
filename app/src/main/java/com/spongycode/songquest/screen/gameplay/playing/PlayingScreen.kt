@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +38,10 @@ import com.spongycode.songquest.ui.theme.OptionDarkYellow
 import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.ui.theme.OptionLightRed
 import com.spongycode.songquest.ui.theme.OptionLightYellow
+import com.spongycode.songquest.util.Constants.MEDIUM_HEIGHT
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
+import com.spongycode.songquest.util.Constants.TOTAL_CHANCE
+import kotlin.math.min
 
 @Composable
 fun PlayingScreen(
@@ -50,6 +57,8 @@ fun PlayingScreen(
 
     val playingState = viewModel.playingState.value
 
+    val totalLife = viewModel.totalLife.intValue
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +67,30 @@ fun PlayingScreen(
         verticalArrangement = Arrangement.SpaceAround
     ) {
 
+
         if (currentSongIndex < viewModel.questions.size) {
+            LazyRow {
+                repeat(totalLife) {
+                    item {
+                        Icon(
+                            modifier = Modifier.size(MEDIUM_HEIGHT),
+                            painter = painterResource(id = R.drawable.heart),
+                            contentDescription = null,
+                            tint = OptionDarkRed
+                        )
+                    }
+                }
+                repeat(min(TOTAL_CHANCE,TOTAL_CHANCE - totalLife)) {
+                    item {
+                        Icon(
+                            modifier = Modifier.size(MEDIUM_HEIGHT),
+                            painter = painterResource(id = R.drawable.heart),
+                            contentDescription = null,
+                            tint = Color.LightGray
+                        )
+                    }
+                }
+            }
             Text(
                 text = viewModel.questions[currentSongIndex].title.toString(),
                 fontSize = 25.sp,

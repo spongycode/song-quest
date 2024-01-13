@@ -30,4 +30,6 @@ object Constants {
     const val HOLLYWOOD_CODE = "HOLLYWOOD"
     const val DESI_HIP_HOP_CODE = "DESI_HIP_HOP"
     const val HIP_HOP_CODE = "HIP_HOP"
+
+    const val TOTAL_CHANCE = 3
 }

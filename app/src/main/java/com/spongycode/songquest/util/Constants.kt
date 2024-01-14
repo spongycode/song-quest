@@ -31,5 +31,5 @@ object Constants {
     const val DESI_HIP_HOP_CODE = "DESI_HIP_HOP"
     const val HIP_HOP_CODE = "HIP_HOP"
 
-    const val TOTAL_CHANCE = 5
+    const val TOTAL_CHANCE = 3
 }

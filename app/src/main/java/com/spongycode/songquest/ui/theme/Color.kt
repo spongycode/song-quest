@@ -18,6 +18,9 @@ val DecentBlue = Color(0xFF6BA3D3)
 val OptionLightBlue = Color(0xFFDCF8FF)
 val OptionDarkBlue = Color(0xFF3EB8D4)
 
+val OptionLightGreen = Color(0xFFCAF7E7)
+val OptionDarkGreen = Color(0xFF3ED4A1)
+
 val OptionLightYellow = Color(0xFFFFF2BE)
 val OptionDarkYellow = Color(0xFFFFD000)
 

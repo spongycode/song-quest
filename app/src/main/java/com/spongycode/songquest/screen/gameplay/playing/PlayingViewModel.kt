@@ -21,8 +21,10 @@ import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.Checking
 import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.CorrectAnswer
 import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.Idle
 import com.spongycode.songquest.screen.gameplay.playing.OptionTapState.WrongAnswer
+import com.spongycode.songquest.util.Constants.TIME_PER_QUESTION
 import com.spongycode.songquest.util.Constants.TOTAL_CHANCE
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +47,6 @@ class PlayingViewModel @Inject constructor(
     val totalLife: IntState = _totalLife
 
     private val _isCorrect = mutableStateOf(false)
-    val isCorrect: State<Boolean> = _isCorrect
 
     private val _currentScore = mutableFloatStateOf(0f)
     val currentScore: State<Float> = _currentScore
@@ -63,10 +64,18 @@ class PlayingViewModel @Inject constructor(
     private val _isGameOver = mutableStateOf(false)
     val isGameOver: State<Boolean> = _isGameOver
 
+    private val _showOptions = mutableStateOf(false)
+    val showOptions: State<Boolean> = _showOptions
+
     private val _questions = mutableStateListOf<QuestionModel>()
     val questions: SnapshotStateList<QuestionModel> = _questions
 
     private var mediaPlayer: MediaPlayer? = null
+
+    private var timerJob: Job? = null
+
+    private val _time = mutableIntStateOf(TIME_PER_QUESTION)
+    val time: IntState = _time
 
     init {
         mediaPlayer = MediaPlayer()
@@ -99,7 +108,18 @@ class PlayingViewModel @Inject constructor(
     }
 
     fun checkAnswer(optionId: Int) {
+        if (optionId == -1) {
+            if (_totalLife.intValue == 0) {
+                mediaPlayer?.release()
+                _isGameOver.value = true
+            } else {
+                _totalLife.intValue--
+                nextQuestion()
+            }
+            return
+        }
         _optionTapState.value = Checking
+        timerJob?.cancel()
         viewModelScope.launch {
             val res = gameplayRepository.checkAnswer(
                 CheckAnswerModel(
@@ -135,10 +155,24 @@ class PlayingViewModel @Inject constructor(
     }
 
     private fun nextQuestion() {
+        _showOptions.value = false
+        _time.intValue = TIME_PER_QUESTION
+        timerJob?.cancel()
         _optionTapState.value = Idle
-        _isCorrect.value = false
         _tappedButtonId.intValue = -1
         _currentSongIndex.intValue++
+    }
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            _showOptions.value = true
+            _time.intValue = TIME_PER_QUESTION
+            while (true) {
+                delay(1000)
+                _time.intValue--
+            }
+        }
     }
 
     fun playCurrentSong() {
@@ -150,6 +184,7 @@ class PlayingViewModel @Inject constructor(
             mediaPlayer?.prepareAsync()
             mediaPlayer?.setOnPreparedListener {
                 mediaPlayer?.start()
+                startTimer()
                 mediaPlayer?.isLooping = true
 //                mediaPlayer?.setOnCompletionListener {
 //                    increase()

@@ -24,11 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.screen.gameplay.playing.components.CircularTimer
 import com.spongycode.songquest.screen.gameplay.playing.components.HealthMeter
 import com.spongycode.songquest.screen.gameplay.playing.components.OptionsArea
 import com.spongycode.songquest.screen.gameplay.playing.components.QuestionTitle
 import com.spongycode.songquest.screen.gameplay.playing.components.ScoreBoard
+import com.spongycode.songquest.screen.gameplay.playing.components.updateCircularTransitionData
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.TIME_PER_QUESTION
 
 @Composable
 fun PlayingScreen(
@@ -46,6 +49,10 @@ fun PlayingScreen(
     if (isGameOver) {
         navController.popBackStack()
         navController.navigate("gameover/${viewModel.game.value._id}")
+    }
+
+    if (viewModel.time.intValue == 0) {
+        viewModel.checkAnswer(-1)
     }
 
     Column(
@@ -76,6 +83,10 @@ fun PlayingScreen(
 fun PlayingScreenSuccess(
     viewModel: PlayingViewModel
 ) {
+    val transitionData = updateCircularTransitionData(
+        remainingTime = viewModel.time.intValue.toLong(),
+        totalTime = TIME_PER_QUESTION.toLong()
+    )
     if (viewModel.currentSongIndex.intValue < viewModel.questions.size) {
         LaunchedEffect(viewModel.currentSongIndex.intValue) {
             viewModel.playCurrentSong()
@@ -85,11 +96,12 @@ fun PlayingScreenSuccess(
                 .fillMaxSize()
                 .padding(horizontal = 15.dp)
                 .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier
-                    .padding(vertical = 80.dp)
+                    .padding(top = 60.dp, bottom = 20.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -97,15 +109,20 @@ fun PlayingScreenSuccess(
                 HealthMeter(totalLife = viewModel.totalLife.intValue)
                 ScoreBoard(score = viewModel.currentScore.value)
             }
+
+            CircularTimer(transitionData = transitionData, time = viewModel.time.intValue)
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(vertical = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 QuestionTitle(viewModel.questions[viewModel.currentSongIndex.intValue].title.toString())
-                OptionsArea(viewModel)
+                if (viewModel.showOptions.value) {
+                    OptionsArea(viewModel)
+                }
             }
         }
     }

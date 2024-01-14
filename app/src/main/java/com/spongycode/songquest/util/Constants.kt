@@ -32,4 +32,7 @@ object Constants {
     const val HIP_HOP_CODE = "HIP_HOP"
 
     const val TOTAL_CHANCE = 3
+    const val TIME_PER_QUESTION = 30
+
+    const val CIRCULAR_TIMER_RADIUS = 100
 }

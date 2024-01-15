@@ -33,14 +33,13 @@ fun CategorySelector(
     bannerId: Int
 ) {
     val configuration = LocalConfiguration.current
-    val width = (configuration.screenWidthDp - 20) / 2
+    val width = (configuration.screenWidthDp - 40) / 2
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
             .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
             .width(width.dp)
             .height((width + 30).dp)
-            .padding(5.dp)
             .clickable {
                 onClick()
             },

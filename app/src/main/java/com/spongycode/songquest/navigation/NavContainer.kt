@@ -72,8 +72,8 @@ fun NavContainer(startDestination: String) {
             val gameId = it.arguments?.getString("gameId")
             GameOverScreen(gameId = gameId!!, navController = navController)
         }
-        composable(route = "profile"){
-            ProfileScreen()
+        composable(route = "profile") {
+            ProfileScreen(navController = navController)
         }
     }
 }

@@ -4,11 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.AuthRepository
+import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.screen.auth.register.RegisterState.*
 import com.spongycode.songquest.screen.ui_events.SnackBarEvent
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val repository: AuthRepository
+    private val repository: AuthRepository,
+    private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
 
     private val _fullName = mutableStateOf("")
@@ -40,6 +44,8 @@ class RegisterViewModel @Inject constructor(
     private val _snackBarFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarFlow = _snackBarFlow.asSharedFlow()
 
+    private val _shouldNavigateToHome = mutableStateOf(false)
+    val shouldNavigateToHome: State<Boolean> = _shouldNavigateToHome
 
     fun onEvent(event: RegisterEvent) {
         if (_registerState.value == Error) {
@@ -87,7 +93,25 @@ class RegisterViewModel @Inject constructor(
                     _password.value
                 )
                 if (res?.status == "success") {
+                    datastoreRepository.storeString(
+                        key = DatastoreRepositoryImpl.accessTokenSession,
+                        value = res.data?.accessToken.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = DatastoreRepositoryImpl.refreshTokenSession,
+                        value = res.data?.refreshToken.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = DatastoreRepositoryImpl.usernameSession,
+                        value = res.data?.user?.username.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = DatastoreRepositoryImpl.emailSession,
+                        value = res.data?.user?.email.toString()
+                    )
                     _registerState.value = Success
+                    delay(1000)
+                    _shouldNavigateToHome.value = true
                 } else {
                     _snackBarFlow.emit(
                         SnackBarEvent(

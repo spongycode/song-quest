@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
 import com.spongycode.songquest.screen.gameplay.playing.OptionTapState
 import com.spongycode.songquest.screen.gameplay.playing.PlayingViewModel
@@ -23,7 +24,7 @@ import com.spongycode.songquest.util.Constants
 
 @Composable
 fun OptionsArea(
-    viewModel: PlayingViewModel
+    viewModel: PlayingViewModel = hiltViewModel()
 ) {
     LazyColumn(
         modifier = Modifier

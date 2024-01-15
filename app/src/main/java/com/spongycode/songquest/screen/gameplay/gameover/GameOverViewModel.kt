@@ -25,6 +25,16 @@ class GameOverViewModel @Inject constructor(
     private val _game = mutableStateOf(GameModel(null, null, null, emptyList(), null, null))
     val game: State<GameModel> = _game
 
+    private val _username = mutableStateOf("username")
+    val username: State<String> = _username
+
+    init {
+        viewModelScope.launch {
+            _username.value =
+                datastoreRepository.getString(DatastoreRepositoryImpl.usernameSession).toString()
+        }
+    }
+
     fun saveGame(gameId: String) {
         viewModelScope.launch {
             val accessToken =

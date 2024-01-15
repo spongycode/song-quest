@@ -14,6 +14,7 @@ import com.spongycode.songquest.screen.auth.login.LoginScreen
 import com.spongycode.songquest.screen.auth.register.RegisterScreen
 import com.spongycode.songquest.screen.gameplay.gameover.GameOverScreen
 import com.spongycode.songquest.screen.gameplay.playing.PlayingScreen
+import com.spongycode.songquest.screen.gameplay.profile.ProfileScreen
 import com.spongycode.songquest.screen.starter.StarterScreen
 
 @Composable
@@ -70,6 +71,9 @@ fun NavContainer(startDestination: String) {
         composable(route = "gameover/{gameId}") {
             val gameId = it.arguments?.getString("gameId")
             GameOverScreen(gameId = gameId!!, navController = navController)
+        }
+        composable(route = "profile"){
+            ProfileScreen()
         }
     }
 }

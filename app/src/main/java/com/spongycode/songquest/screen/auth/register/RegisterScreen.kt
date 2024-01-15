@@ -46,6 +46,7 @@ import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.Constants
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -80,6 +81,10 @@ fun RegisterScreen(
         }
     }
 
+    if (viewModel.shouldNavigateToHome.value) {
+        navController.popBackStack()
+        navController.navigate("home")
+    }
 
     Scaffold(
         snackbarHost = {
@@ -158,6 +163,7 @@ fun RegisterScreen(
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             if (registerState == Success) {
+                                navController.popBackStack()
                                 navController.navigate("home")
                             } else if (registerState == Idle) {
                                 viewModel.onEvent(Register)

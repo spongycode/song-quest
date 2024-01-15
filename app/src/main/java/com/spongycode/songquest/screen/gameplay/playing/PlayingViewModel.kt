@@ -51,7 +51,6 @@ class PlayingViewModel @Inject constructor(
     private val _currentScore = mutableFloatStateOf(0f)
     val currentScore: State<Float> = _currentScore
 
-
     private val _game = mutableStateOf(GameModel(null, null, null, emptyList(), null, null))
     val game: State<GameModel> = _game
 
@@ -126,7 +125,7 @@ class PlayingViewModel @Inject constructor(
                     gameId = _game.value._id.toString(),
                     questionId = _questions[currentSongIndex.intValue]._id.toString(),
                     optionId = optionId,
-                    timeTaken = 20
+                    timeTaken = TIME_PER_QUESTION - _time.intValue
                 )
             )
             if (res?.status == "success") {

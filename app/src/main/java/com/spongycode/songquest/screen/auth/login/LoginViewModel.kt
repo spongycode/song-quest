@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.emailSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.gamesPlayedSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.refreshTokenSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
 import com.spongycode.songquest.domain.repository.AuthRepository
@@ -93,6 +94,10 @@ class LoginViewModel @Inject constructor(
                     datastoreRepository.storeString(
                         key = emailSession,
                         value = res.data?.user?.email.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = gamesPlayedSession,
+                        value = res.data?.user?.gamesPlayed.toString()
                     )
                     _loginState.value = LoginState.Success
                 } else {

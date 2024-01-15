@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,8 +28,6 @@ import com.spongycode.songquest.screen.gameplay.home.components.Header
 import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.ui.theme.OptionLightGreen
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Constants.LARGE_HEIGHT
-import com.spongycode.songquest.util.Constants.MEDIUM_HEIGHT
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
 
 
@@ -38,7 +37,9 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val username = viewModel.username.value
-
+    LaunchedEffect(Unit) {
+        viewModel.getData()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +52,7 @@ fun HomeScreen(
         Header({ navController.navigate("profile") }, username)
 
         CardInfo(
-            "Games played: 12",
+            "Games played: ${viewModel.gamesPlayed.intValue}",
             trailingIcon = R.drawable.gameplay_count,
             bgColor = OptionLightBlue
         )

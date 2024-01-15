@@ -23,9 +23,6 @@ class RegisterViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
 
-    private val _fullName = mutableStateOf("")
-    val fullName: State<String> = _fullName
-
     private val _username = mutableStateOf("")
     val username: State<String> = _username
 
@@ -52,7 +49,6 @@ class RegisterViewModel @Inject constructor(
             _registerState.value = Idle
         }
         when (event) {
-            is RegisterEvent.EnteredFullName -> _fullName.value = event.value
             is RegisterEvent.EnteredUsername -> _username.value = event.value
             is RegisterEvent.EnteredEmail -> _email.value = event.value
             is RegisterEvent.EnteredPassword -> _password.value = event.value
@@ -64,8 +60,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun validationCheck(): String? {
-        return ValidationHelper.validateFullName(_fullName.value)
-            ?: ValidationHelper.validateUsername(_username.value)
+        return ValidationHelper.validateUsername(_username.value)
             ?: ValidationHelper.validateEmail(_email.value)
             ?: ValidationHelper.validatePassword(_password.value)
     }
@@ -87,7 +82,6 @@ class RegisterViewModel @Inject constructor(
             _registerState.value = Checking
             try {
                 val res = repository.register(
-                    _fullName.value,
                     _username.value,
                     _email.value,
                     _password.value
@@ -108,6 +102,10 @@ class RegisterViewModel @Inject constructor(
                     datastoreRepository.storeString(
                         key = DatastoreRepositoryImpl.emailSession,
                         value = res.data?.user?.email.toString()
+                    )
+                    datastoreRepository.storeString(
+                        key = DatastoreRepositoryImpl.gamesPlayedSession,
+                        value = 0.toString()
                     )
                     _registerState.value = Success
                     delay(1000)

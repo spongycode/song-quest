@@ -40,5 +40,6 @@ class DatastoreRepositoryImpl @Inject constructor(
         val refreshTokenSession = stringPreferencesKey(Constants.REFRESH_TOKEN_SESSION)
         val usernameSession = stringPreferencesKey(Constants.USERNAME_SESSION)
         val emailSession = stringPreferencesKey(Constants.EMAIL_SESSION)
+        val gamesPlayedSession = stringPreferencesKey(Constants.GAMES_PLAYED_SESSION)
     }
 }

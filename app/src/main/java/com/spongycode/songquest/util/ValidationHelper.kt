@@ -3,22 +3,18 @@ package com.spongycode.songquest.util
 import android.util.Patterns
 
 object ValidationHelper {
-    fun validateFullName(fullName: String): String? {
-        val trimmedFullName = fullName.trim()
-        if (trimmedFullName.isBlank()) {
-            return "Name is required"
-        }
-        return null
-    }
-
     fun validateUsername(username: String): String? {
         val trimmedUsername = username.trim()
         if (trimmedUsername.isBlank()) {
             return "Username is required"
         }
 
-        if (trimmedUsername.length < 4) {
+        if (trimmedUsername.length < Constants.USERNAME_MIN_LENGTH) {
             return "Username too short"
+        }
+
+        if (trimmedUsername.length > Constants.USERNAME_MAX_LENGTH) {
+            return "Username too long"
         }
         return null
     }

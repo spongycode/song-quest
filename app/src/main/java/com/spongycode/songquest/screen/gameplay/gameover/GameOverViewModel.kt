@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.model.gameplay.CheckAnswerModel
 import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.gamesPlayedSession
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +50,11 @@ class GameOverViewModel @Inject constructor(
                 if (res?.status == "success") {
                     _game.value = res.data?.game!!
                     _gameOverState.value = GameOverState.Success
+                    val gamesPlayed = res.data.gamesPlayed?.toString()
+                    datastoreRepository.storeString(
+                        gamesPlayedSession, gamesPlayed.toString()
+                    )
+
                 } else {
                     _gameOverState.value = GameOverState.Error
                 }

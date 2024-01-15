@@ -18,8 +18,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val client: HttpClient
 ) : AuthRepository {
     override suspend fun register(
-        fullName: String, username: String,
-        email: String, password: String
+        username: String,
+        email: String,
+        password: String
     ): ApiResponse<AuthModel>? {
         return try {
             val res = client.post {
@@ -27,7 +28,6 @@ class AuthRepositoryImpl @Inject constructor(
                 contentType(ContentType.Application.Json)
                 setBody(
                     UserModel(
-                        fullName = fullName,
                         username = username,
                         email = email,
                         password = password

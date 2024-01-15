@@ -12,6 +12,7 @@ object Constants {
     const val REFRESH_TOKEN_SESSION = "REFRESH_TOKEN_SESSION"
     const val USERNAME_SESSION = "USERNAME_SESSION"
     const val EMAIL_SESSION = "EMAIL_SESSION"
+    const val GAMES_PLAYED_SESSION = "GAMES_PLAYED_SESSION"
 
     val VERY_SMALL_HEIGHT = 8.dp
     val SMALL_HEIGHT = 15.dp
@@ -35,4 +36,7 @@ object Constants {
     const val TIME_PER_QUESTION = 30
 
     const val CIRCULAR_TIMER_RADIUS = 100
+
+    const val USERNAME_MIN_LENGTH = 4
+    const val USERNAME_MAX_LENGTH = 15
 }

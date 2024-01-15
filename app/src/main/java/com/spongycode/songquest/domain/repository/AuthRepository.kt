@@ -6,8 +6,9 @@ import com.spongycode.songquest.data.model.auth.UserModel
 
 interface AuthRepository {
     suspend fun register(
-        fullName: String, username: String,
-        email: String, password: String
+        username: String,
+        email: String,
+        password: String
     ): ApiResponse<AuthModel>?
 
     suspend fun login(

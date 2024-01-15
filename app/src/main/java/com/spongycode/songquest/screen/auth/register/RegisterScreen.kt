@@ -39,14 +39,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.screen.auth.components.CustomTextField
 import com.spongycode.songquest.screen.auth.register.RegisterEvent.*
 import com.spongycode.songquest.screen.auth.register.RegisterState.*
-import com.spongycode.songquest.screen.auth.components.CustomTextField
 import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.Constants
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -56,7 +55,6 @@ fun RegisterScreen(
     navController: NavHostController,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val fullName = viewModel.fullName.value
     val username = viewModel.username.value
     val email = viewModel.email.value
     val password = viewModel.password.value
@@ -109,18 +107,6 @@ fun RegisterScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
                 ) {
-
-                    CustomTextField(
-                        text = fullName,
-                        labelText = "Name",
-                        placeHolderText = "Name",
-                        shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                        singleLine = true,
-                        onValueChange = { viewModel.onEvent(EnteredFullName(it)) },
-                    )
-
-                    Spacer(modifier = Modifier.height(Constants.VERY_SMALL_HEIGHT))
-
                     CustomTextField(
                         text = username,
                         labelText = "Username",

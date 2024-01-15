@@ -51,6 +51,10 @@ class StarterViewModel @Inject constructor(
                             key = DatastoreRepositoryImpl.emailSession,
                             value = res.data?.user?.email.toString()
                         )
+                        datastoreRepository.storeString(
+                            key = DatastoreRepositoryImpl.gamesPlayedSession,
+                            value = res.data?.user?.gamesPlayed.toString()
+                        )
                         _navigationFlow.emit(NavigationEvent(route = "home"))
                     } else {
                         _navigationFlow.emit(NavigationEvent(route = "register"))

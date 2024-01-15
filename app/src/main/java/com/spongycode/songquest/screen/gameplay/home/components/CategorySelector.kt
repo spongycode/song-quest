@@ -66,7 +66,7 @@ fun CategorySelector(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color.Transparent, Color(0xFF000000)),
                         startY = 0f,
-                        endY = 150f
+                        endY = 100f
                     )
                 )
                 .padding(10.dp)

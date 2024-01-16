@@ -1,21 +1,28 @@
 package com.spongycode.songquest.screen.gameplay.history
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.spongycode.songquest.screen.gameplay.history.components.GameListItem
+import com.spongycode.songquest.screen.gameplay.history.components.CustomList
 import com.spongycode.songquest.screen.gameplay.profile.components.Topbar
-import com.spongycode.songquest.ui.theme.OptionLightBlue
-import com.spongycode.songquest.ui.theme.OptionLightGreen
 
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -26,24 +33,27 @@ fun HistoryScreen(
     Scaffold(topBar = {
         Topbar({ navController.navigateUp() }, "Your games")
     }) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(
-                    top = it.calculateTopPadding(),
-                    start = 10.dp,
-                    end = 10.dp
-                )
-                .fillMaxWidth()
-        ) {
-            var index = 0
-            items(games) { game ->
-                GameListItem(
-                    score = game.score?.toInt(),
-                    category = game.category.toString(),
-                    bgColor = if (index % 2 == 0) OptionLightBlue else OptionLightGreen
-                )
-                index++
-            }
+        when (viewModel.historyState.value) {
+            HistoryState.Error -> PlaceholderMessageText("Oops, some error occurred.")
+            HistoryState.Loading -> PlaceholderMessageText("Loading your latest games..")
+            HistoryState.Success -> CustomList(games = games, it.calculateTopPadding())
         }
+    }
+}
+
+
+@Composable
+fun PlaceholderMessageText(text: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = text, fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.W600
+        )
     }
 }

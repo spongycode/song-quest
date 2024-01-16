@@ -13,6 +13,7 @@ import com.spongycode.songquest.screen.auth.forgot_password.ForgotPasswordScreen
 import com.spongycode.songquest.screen.auth.login.LoginScreen
 import com.spongycode.songquest.screen.auth.register.RegisterScreen
 import com.spongycode.songquest.screen.gameplay.gameover.GameOverScreen
+import com.spongycode.songquest.screen.gameplay.history.HistoryScreen
 import com.spongycode.songquest.screen.gameplay.playing.PlayingScreen
 import com.spongycode.songquest.screen.gameplay.profile.ProfileScreen
 import com.spongycode.songquest.screen.starter.StarterScreen
@@ -74,6 +75,9 @@ fun NavContainer(startDestination: String) {
         }
         composable(route = "profile") {
             ProfileScreen(navController = navController)
+        }
+        composable(route = "history") {
+            HistoryScreen(navController = navController)
         }
     }
 }

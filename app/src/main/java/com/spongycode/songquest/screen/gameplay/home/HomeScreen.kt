@@ -54,7 +54,8 @@ fun HomeScreen(
         CardInfo(
             "Games played: ${viewModel.gamesPlayed.intValue}",
             trailingIcon = R.drawable.gameplay_count,
-            bgColor = OptionLightBlue
+            bgColor = OptionLightBlue,
+            onClick = {navController.navigate("history")}
         )
 
         Text(text = "Pick a category", fontSize = 20.sp, fontWeight = FontWeight.W600)

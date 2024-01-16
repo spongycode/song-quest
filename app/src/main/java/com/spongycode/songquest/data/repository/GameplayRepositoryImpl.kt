@@ -1,8 +1,10 @@
 package com.spongycode.songquest.data.repository
 
 import com.spongycode.songquest.data.model.ApiResponse
+import com.spongycode.songquest.data.model.auth.AuthModel
 import com.spongycode.songquest.data.model.gameplay.CheckAnswerModel
 import com.spongycode.songquest.data.model.gameplay.CreateGameModel
+import com.spongycode.songquest.data.model.gameplay.HistoryModel
 import com.spongycode.songquest.data.model.gameplay.PlayingModel
 import com.spongycode.songquest.domain.repository.GameplayRepository
 import com.spongycode.songquest.util.Constants.BASE_URL
@@ -56,6 +58,19 @@ class GameplayRepositoryImpl @Inject constructor(
                 setBody(checkAnswerModel)
             }
             res.body<ApiResponse<PlayingModel>>()
+        } catch (err: Exception) {
+            null
+        }
+    }
+
+    override suspend fun history(authModel: AuthModel): ApiResponse<HistoryModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/gameplay/history")
+                contentType(ContentType.Application.Json)
+                setBody(authModel)
+            }
+            res.body<ApiResponse<HistoryModel>>()
         } catch (err: Exception) {
             null
         }

@@ -64,4 +64,14 @@ object ValidationHelper {
         }
         return null
     }
+
+    fun validateOTP(otp: String): String? {
+        if (otp.isBlank()) {
+            return "OTP is required"
+        }
+        if (otp.length < 4) {
+            return "OTP too short"
+        }
+        return null
+    }
 }

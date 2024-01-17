@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -36,6 +38,11 @@ fun StarterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Authenticating...", fontSize = 25.sp)
+        Text(
+            text = "Authenticating...",
+            fontSize = 25.sp,
+            fontWeight = FontWeight.W600,
+            fontFamily = Fonts.poppinsFamily
+        )
     }
 }

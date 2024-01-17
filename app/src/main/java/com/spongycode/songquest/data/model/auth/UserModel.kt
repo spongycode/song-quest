@@ -10,5 +10,6 @@ data class UserModel(
     val fullName: String? = null,
     val password: String? = null,
     val refreshToken: String? = null,
+    val otp: String? = null,
     val gamesPlayed: Int? = null
 )

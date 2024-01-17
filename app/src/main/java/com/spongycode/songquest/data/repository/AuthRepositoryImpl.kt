@@ -81,6 +81,19 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun changePassword(userModel: UserModel): ApiResponse<UserModel>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/users/password")
+                contentType(ContentType.Application.Json)
+                setBody(userModel)
+            }
+            res.body<ApiResponse<UserModel>>()
+        } catch (err: Exception) {
+            null
+        }
+    }
+
     override suspend fun refreshToken(
         refreshToken: String
     ): ApiResponse<AuthModel>? {
@@ -100,5 +113,3 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 }
-
-

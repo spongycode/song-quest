@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.R
+import com.spongycode.songquest.util.Fonts
 
 @Composable
 fun CustomTextField(
@@ -40,7 +41,8 @@ fun CustomTextField(
     isPasswordVisible: Boolean = false,
     onPasswordToggleClick: (Boolean) -> Unit = {},
     onValueChange: (String) -> Unit,
-    focusRequester: FocusRequester = FocusRequester()
+    focusRequester: FocusRequester = FocusRequester(),
+    enabled: Boolean = true
 ) {
     Column(
         modifier = Modifier
@@ -52,17 +54,20 @@ fun CustomTextField(
             onValueChange = {
                 onValueChange(it)
             },
-            label = { Text(text = labelText) },
+            label = {
+                Text(text = labelText, fontFamily = Fonts.poppinsFamily)
+            },
             placeholder = {
                 Text(
                     color = MaterialTheme.colorScheme.inversePrimary,
-                    text = placeHolderText
+                    text = placeHolderText,
+                    fontFamily = Fonts.poppinsFamily
                 )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType
             ),
-
+            enabled = enabled,
             visualTransformation = if (!isPasswordVisible && isPasswordToggleDisplayed) {
                 PasswordVisualTransformation()
             } else {
@@ -97,7 +102,8 @@ fun CustomTextField(
             } else null,
             textStyle = TextStyle(
                 fontWeight = FontWeight.W500,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                fontFamily = Fonts.poppinsFamily
             )
         )
     }

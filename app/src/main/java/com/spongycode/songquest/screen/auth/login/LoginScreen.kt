@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -28,22 +25,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.screen.auth.components.CustomAnnotatedString
+import com.spongycode.songquest.screen.auth.components.CustomButton
 import com.spongycode.songquest.screen.auth.components.CustomTextField
+import com.spongycode.songquest.screen.auth.components.TitleText
 import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -86,7 +83,7 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
-            Text(text = "Login", fontSize = 35.sp, fontWeight = FontWeight.W800)
+            TitleText("Login 🔐")
 
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
@@ -123,12 +120,14 @@ fun LoginScreen(
                         onPasswordToggleClick = { viewModel.onEvent(LoginEvent.TogglePasswordVisibility) }
                     )
 
-                    Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
+                    Spacer(modifier = Modifier.height(Constants.SMALL_HEIGHT))
 
                     Text(
                         text = "Forgot password?",
                         color = Color(0xFF267BC4),
                         textDecoration = TextDecoration.Underline,
+                        fontFamily = Fonts.poppinsFamily,
+                        fontWeight = FontWeight.W600,
                         modifier = Modifier
                             .clickable {
                                 navController.navigate("forgotpassword")
@@ -137,7 +136,7 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(Constants.VERY_LARGE_HEIGHT))
 
-                    Button(
+                    CustomButton(
                         onClick = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
@@ -148,63 +147,33 @@ fun LoginScreen(
                                 viewModel.onEvent(LoginEvent.Login)
                             }
                         },
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = when (loginState) {
-                                LoginState.Checking -> Color.DarkGray
-                                LoginState.Idle -> DecentBlue
-                                LoginState.Error -> DecentRed
-                                LoginState.Success -> DecentGreen
-                            },
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp),
-                            text = when (loginState) {
-                                LoginState.Checking -> "Logging in..."
-                                LoginState.Idle -> "Login"
-                                LoginState.Error -> stringResource(R.string.registration_error)
-                                LoginState.Success -> stringResource(R.string.start_playing)
-                            },
-                            fontSize = 15.sp
-                        )
-                    }
+                        containerColor = when (loginState) {
+                            LoginState.Checking -> Color.DarkGray
+                            LoginState.Idle -> DecentBlue
+                            LoginState.Error -> DecentRed
+                            LoginState.Success -> DecentGreen
+                        },
+                        contentColor = Color.Black,
+                        displayText = when (loginState) {
+                            LoginState.Checking -> "Logging in..."
+                            LoginState.Idle -> "Login"
+                            LoginState.Error -> stringResource(R.string.registration_error)
+                            LoginState.Success -> stringResource(R.string.start_playing)
+                        }
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
 
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(color = MaterialTheme.colorScheme.primary)
-                    ) {
-                        append("Don't have an account? ")
-                    }
-                    pushStringAnnotation(
-                        tag = "register",
-                        annotation = "Register here"
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color(0xFF267BC4), textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("Register here")
-                    }
-                    pop()
-                },
-
-                modifier = Modifier
-                    .clickable {
-                        navController.popBackStack()
-                        navController.navigate("register")
-                    }
+            CustomAnnotatedString(
+                str1 = "Don't have an account? ",
+                tag = "register",
+                str2 = "Register here",
+                onClick = {
+                    navController.popBackStack()
+                    navController.navigate("register")
+                }
             )
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.screen.ui_events.SnackBarEvent
 import com.spongycode.songquest.util.ValidationHelper
@@ -20,8 +21,20 @@ class ForgotPasswordViewModel @Inject constructor(
     private val _email = mutableStateOf("")
     val email: State<String> = _email
 
+    private val _password = mutableStateOf("")
+    val password: State<String> = _password
+
+    private val _otp = mutableStateOf("")
+    val otp: State<String> = _otp
+
+    private val _isPasswordVisible = mutableStateOf(false)
+    val isPasswordVisible: State<Boolean> = _isPasswordVisible
+
     private val _forgotPasswordState = mutableStateOf<ForgotPasswordState>(ForgotPasswordState.Idle)
     val forgotPasswordState: State<ForgotPasswordState> = _forgotPasswordState
+
+    private val _changePasswordState = mutableStateOf<ForgotPasswordState>(ForgotPasswordState.Idle)
+    val changePasswordState: State<ForgotPasswordState> = _changePasswordState
 
     private val _snackBarFlow = MutableSharedFlow<SnackBarEvent>()
     val snackBarFlow = _snackBarFlow.asSharedFlow()
@@ -30,18 +43,61 @@ class ForgotPasswordViewModel @Inject constructor(
         if (_forgotPasswordState.value == ForgotPasswordState.Error) {
             _forgotPasswordState.value = ForgotPasswordState.Idle
         }
+        if (_changePasswordState.value == ForgotPasswordState.Error) {
+            _changePasswordState.value = ForgotPasswordState.Idle
+        }
         when (event) {
             is ForgotPasswordEvent.EnteredEmail -> _email.value = event.value
-            ForgotPasswordEvent.Send -> sendForgotPasswordEmail()
+            is ForgotPasswordEvent.EnteredPassword -> _password.value = event.value
+            is ForgotPasswordEvent.EnteredOTP -> _otp.value = event.value
+            is ForgotPasswordEvent.TogglePasswordVisibility -> _isPasswordVisible.value =
+                !_isPasswordVisible.value
+
+            is ForgotPasswordEvent.SendResetPasswordEmail -> sendForgotPasswordEmail()
+            ForgotPasswordEvent.SendChangePassword -> changePassword()
         }
     }
 
-    private fun validationCheck(): String? {
-        return ValidationHelper.validateEmail(_email.value)
+    private fun changePassword() {
+        val validationError = ValidationHelper.validatePassword(_password.value)
+            ?: ValidationHelper.validateOTP(_otp.value)
+        viewModelScope.launch {
+            if (validationError != null) {
+                _snackBarFlow.emit(
+                    SnackBarEvent(
+                        show = true,
+                        text = validationError
+                    )
+                )
+                return@launch
+            }
+
+            _changePasswordState.value = ForgotPasswordState.Checking
+            try {
+                val res = repository.changePassword(
+                    UserModel(
+                        email = email.value, otp = otp.value, password = password.value
+                    )
+                )
+                if (res?.status == "success") {
+                    _changePasswordState.value = ForgotPasswordState.Success
+                } else {
+                    _snackBarFlow.emit(
+                        SnackBarEvent(
+                            show = true,
+                            text = res?.message.toString()
+                        )
+                    )
+                    _changePasswordState.value = ForgotPasswordState.Error
+                }
+            } catch (_: Exception) {
+                _changePasswordState.value = ForgotPasswordState.Error
+            }
+        }
     }
 
     private fun sendForgotPasswordEmail() {
-        val validationError = validationCheck()
+        val validationError = ValidationHelper.validateEmail(_email.value)
 
         viewModelScope.launch {
             if (validationError != null) {

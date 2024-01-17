@@ -19,6 +19,10 @@ interface AuthRepository {
         email: String
     ): ApiResponse<UserModel>?
 
+    suspend fun changePassword(
+        userModel: UserModel
+    ): ApiResponse<UserModel>?
+
     suspend fun refreshToken(
         refreshToken: String
     ): ApiResponse<AuthModel>?

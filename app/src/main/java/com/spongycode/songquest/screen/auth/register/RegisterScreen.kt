@@ -1,7 +1,6 @@
 package com.spongycode.songquest.screen.auth.register
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,14 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -28,18 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.screen.auth.components.CustomAnnotatedString
+import com.spongycode.songquest.screen.auth.components.CustomButton
 import com.spongycode.songquest.screen.auth.components.CustomTextField
+import com.spongycode.songquest.screen.auth.components.TitleText
 import com.spongycode.songquest.screen.auth.register.RegisterEvent.*
 import com.spongycode.songquest.screen.auth.register.RegisterState.*
 import com.spongycode.songquest.ui.theme.DecentBlue
@@ -94,8 +86,7 @@ fun RegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
-            Text(text = "Register", fontSize = 35.sp, fontWeight = FontWeight.W800)
-
+            TitleText("Register 🚀")
             Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
 
             Box(
@@ -144,7 +135,7 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(Constants.VERY_LARGE_HEIGHT))
 
-                    Button(
+                    CustomButton(
                         onClick = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
@@ -155,62 +146,34 @@ fun RegisterScreen(
                                 viewModel.onEvent(Register)
                             }
                         },
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = when (registerState) {
-                                Checking -> Color.DarkGray
-                                Idle -> DecentBlue
-                                Error -> DecentRed
-                                Success -> DecentGreen
-                            },
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp),
-                            text = when (registerState) {
-                                Checking -> stringResource(R.string.registering)
-                                Idle -> stringResource(R.string.register)
-                                Error -> stringResource(R.string.registration_error)
-                                Success -> stringResource(R.string.start_playing)
-                            },
-                            fontSize = 15.sp
-                        )
-                    }
+                        containerColor = when (registerState) {
+                            Checking -> Color.DarkGray
+                            Idle -> DecentBlue
+                            Error -> DecentRed
+                            Success -> DecentGreen
+                        },
+                        contentColor = Color.Black,
+                        displayText = when (registerState) {
+                            Checking -> stringResource(R.string.registering)
+                            Idle -> stringResource(R.string.register)
+                            Error -> stringResource(R.string.registration_error)
+                            Success -> stringResource(R.string.start_playing)
+                        }
+                    )
+
                 }
             }
 
             Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
 
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(color = MaterialTheme.colorScheme.primary)
-                    ) {
-                        append("Already have an account? ")
-                    }
-                    pushStringAnnotation(
-                        tag = "login",
-                        annotation = "Login here"
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color(0xFF267BC4), textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("Login here")
-                    }
-                    pop()
-                },
-
-                modifier = Modifier
-                    .clickable {
-                        navController.popBackStack()
-                        navController.navigate("login")
-                    }
+            CustomAnnotatedString(
+                str1 = "Already have an account? ",
+                tag = "login",
+                str2 = "Login here",
+                onClick = {
+                    navController.popBackStack()
+                    navController.navigate("login")
+                }
             )
         }
     }

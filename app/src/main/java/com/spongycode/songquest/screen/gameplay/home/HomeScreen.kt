@@ -101,7 +101,8 @@ fun HomeScreen(
         CardInfo(
             "Leaderboard",
             trailingIcon = R.drawable.leader_board_icon,
-            bgColor = OptionLightGreen
+            bgColor = OptionLightGreen,
+            onClick = {navController.navigate("leaderboard")}
         )
     }
 }

@@ -75,4 +75,7 @@ class GameplayRepositoryImpl @Inject constructor(
             null
         }
     }
+    override suspend fun leaderboard(authModel: AuthModel): ApiResponse<HistoryModel>? {
+        TODO("Not yet implemented")
+    }
 }

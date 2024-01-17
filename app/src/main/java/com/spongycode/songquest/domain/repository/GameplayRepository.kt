@@ -16,4 +16,5 @@ interface GameplayRepository {
 
     suspend fun saveGame(checkAnswerModel: CheckAnswerModel): ApiResponse<PlayingModel>?
     suspend fun history(authModel: AuthModel): ApiResponse<HistoryModel>?
+    suspend fun leaderboard(authModel: AuthModel): ApiResponse<HistoryModel>?
 }

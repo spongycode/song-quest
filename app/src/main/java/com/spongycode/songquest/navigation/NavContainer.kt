@@ -1,5 +1,7 @@
 package com.spongycode.songquest.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
@@ -14,10 +16,12 @@ import com.spongycode.songquest.screen.auth.login.LoginScreen
 import com.spongycode.songquest.screen.auth.register.RegisterScreen
 import com.spongycode.songquest.screen.gameplay.gameover.GameOverScreen
 import com.spongycode.songquest.screen.gameplay.history.HistoryScreen
+import com.spongycode.songquest.screen.gameplay.leaderboard.LeaderboardScreen
 import com.spongycode.songquest.screen.gameplay.playing.PlayingScreen
 import com.spongycode.songquest.screen.gameplay.profile.ProfileScreen
 import com.spongycode.songquest.screen.starter.StarterScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavContainer(startDestination: String) {
     val navController: NavHostController = rememberNavController()
@@ -78,6 +82,9 @@ fun NavContainer(startDestination: String) {
         }
         composable(route = "history") {
             HistoryScreen(navController = navController)
+        }
+        composable(route = "leaderboard") {
+            LeaderboardScreen(navController = navController)
         }
     }
 }

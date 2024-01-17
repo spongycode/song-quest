@@ -7,7 +7,16 @@ object CategoryConvertor {
             Constants.HOLLYWOOD_CODE -> Constants.HOLLYWOOD_DISPLAY_TEXT
             Constants.DESI_HIP_HOP_CODE -> Constants.DESI_HIP_HOP_DISPLAY_TEXT
             Constants.HIP_HOP_CODE -> Constants.HIP_HOP_DISPLAY_TEXT
-            else -> ""
+            else -> "Mix"
         }
+    }
+
+    fun giveAllCategories(): List<String> {
+        return listOf(
+            Constants.BOLLYWOOD_CODE,
+            Constants.HOLLYWOOD_CODE,
+            Constants.DESI_HIP_HOP_CODE,
+            Constants.HIP_HOP_CODE
+        )
     }
 }

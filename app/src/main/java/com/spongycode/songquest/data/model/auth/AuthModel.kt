@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class AuthModel(
     val accessToken: String? = null,
     val refreshToken: String? = null,
-    val user: UserModel? = null
+    val user: UserModel? = null,
+    val categories: List<String>? = null
 )

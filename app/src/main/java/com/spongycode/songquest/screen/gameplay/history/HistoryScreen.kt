@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spongycode.songquest.screen.gameplay.components.PlaceholderMessageText
 import com.spongycode.songquest.screen.gameplay.history.components.CustomList
 import com.spongycode.songquest.screen.gameplay.profile.components.Topbar
 
@@ -38,22 +39,5 @@ fun HistoryScreen(
             HistoryState.Loading -> PlaceholderMessageText("Loading your latest games..")
             HistoryState.Success -> CustomList(games = games, it.calculateTopPadding())
         }
-    }
-}
-
-
-@Composable
-fun PlaceholderMessageText(text: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text, fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.W600
-        )
     }
 }

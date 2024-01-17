@@ -11,6 +11,7 @@ import com.spongycode.songquest.data.model.gameplay.LeaderboardUsersModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
+import com.spongycode.songquest.screen.gameplay.history.HistoryState
 import com.spongycode.songquest.util.CategoryConvertor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,6 +22,9 @@ class LeaderboardViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository,
     private val gameplayRepository: GameplayRepository
 ) : ViewModel() {
+
+    private val _leaderboardState = mutableStateOf<LeaderboardState>(LeaderboardState.Loading)
+    val leaderboardState: State<LeaderboardState> = _leaderboardState
 
     private val _leaderboardDatabase = mutableStateMapOf<String, List<LeaderboardUsersModel>>()
     val leaderboardDatabase: SnapshotStateMap<String, List<LeaderboardUsersModel>> =
@@ -52,9 +56,12 @@ class LeaderboardViewModel @Inject constructor(
                     res.data?.forEach { item ->
                         _leaderboardDatabase[item.category] = item.users
                     }
+                    _leaderboardState.value = LeaderboardState.Success
                 } else {
+                    _leaderboardState.value = LeaderboardState.Error
                 }
             } catch (err: Exception) {
+                _leaderboardState.value = LeaderboardState.Error
             }
         }
     }

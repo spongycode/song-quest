@@ -23,18 +23,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.spongycode.songquest.data.model.gameplay.LeaderboardUsersModel
+import com.spongycode.songquest.screen.gameplay.leaderboard.LeaderboardViewModel
+import com.spongycode.songquest.screen.gameplay.playing.PlayingViewModel
 import com.spongycode.songquest.util.CategoryConvertor
 
-@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDropDownMenu(
-    categories: List<String> = emptyList()
+    viewModel: LeaderboardViewModel = hiltViewModel(),
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(categories[0]) }
+    val categories = CategoryConvertor.giveAllCategories()
 
     val configuration = LocalConfiguration.current
     val width = (configuration.screenWidthDp - 70)
@@ -53,7 +55,7 @@ fun CustomDropDownMenu(
 
             OutlinedTextField(
                 readOnly = true,
-                value = selectedText,
+                value = CategoryConvertor.codeToDisplayText(viewModel.selectedCategory.value),
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 textStyle = TextStyle(fontWeight = FontWeight.Bold),
@@ -74,7 +76,7 @@ fun CustomDropDownMenu(
                     DropdownMenuItem(
                         text = { Text(text = displayText) },
                         onClick = {
-                            selectedText = displayText
+                            viewModel.changeSelectedCategory(item)
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,

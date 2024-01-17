@@ -5,6 +5,7 @@ import com.spongycode.songquest.data.model.auth.AuthModel
 import com.spongycode.songquest.data.model.gameplay.CheckAnswerModel
 import com.spongycode.songquest.data.model.gameplay.CreateGameModel
 import com.spongycode.songquest.data.model.gameplay.HistoryModel
+import com.spongycode.songquest.data.model.gameplay.LeaderboardModel
 import com.spongycode.songquest.data.model.gameplay.PlayingModel
 import com.spongycode.songquest.domain.repository.GameplayRepository
 import com.spongycode.songquest.util.Constants.BASE_URL
@@ -75,7 +76,17 @@ class GameplayRepositoryImpl @Inject constructor(
             null
         }
     }
-    override suspend fun leaderboard(authModel: AuthModel): ApiResponse<HistoryModel>? {
-        TODO("Not yet implemented")
+
+    override suspend fun leaderboard(authModel: AuthModel): ApiResponse<List<LeaderboardModel>>? {
+        return try {
+            val res = client.post {
+                url("${BASE_URL}api/mobile/gameplay/highscore")
+                contentType(ContentType.Application.Json)
+                setBody(authModel)
+            }
+            res.body<ApiResponse<List<LeaderboardModel>>>()
+        } catch (err: Exception) {
+            null
+        }
     }
 }

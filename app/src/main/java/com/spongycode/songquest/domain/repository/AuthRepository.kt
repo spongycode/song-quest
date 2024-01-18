@@ -26,4 +26,8 @@ interface AuthRepository {
     suspend fun refreshToken(
         refreshToken: String
     ): ApiResponse<AuthModel>?
+
+    suspend fun updateProfile(
+        userModel: UserModel
+    ): ApiResponse<AuthModel>?
 }

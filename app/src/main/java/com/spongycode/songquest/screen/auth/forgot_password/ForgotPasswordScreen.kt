@@ -1,9 +1,6 @@
 package com.spongycode.songquest.screen.auth.forgot_password
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -58,15 +55,6 @@ fun ForgotPasswordScreen(
     val focusManager = LocalFocusManager.current
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = { }
-    )
-
-    val intent = Intent(Intent.ACTION_MAIN).apply {
-        addCategory(Intent.CATEGORY_APP_EMAIL)
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
     LaunchedEffect(key1 = keyboardController) {
         viewModel.snackBarFlow.collectLatest { event ->
             if (event.show) {
@@ -124,7 +112,6 @@ fun ForgotPasswordScreen(
                                 focusManager.clearFocus()
                                 if (forgotPasswordState == Success) {
                                     navController.navigate("login")
-                                    launcher.launch(intent)
                                 } else if (forgotPasswordState == Idle) {
                                     viewModel.onEvent(ForgotPasswordEvent.SendResetPasswordEmail)
                                 }

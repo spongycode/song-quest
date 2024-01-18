@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants.LARGE_HEIGHT
+import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.bounceClick
 
 @Preview
 @Composable
@@ -39,6 +41,7 @@ fun OptionField(
         color = Color.Transparent,
         border = BorderStroke(2.dp, tint),
         modifier = Modifier
+            .bounceClick(0.98f)
             .background(
                 MaterialTheme.colorScheme.primary
                     .copy(alpha = 0.0f)
@@ -61,7 +64,8 @@ fun OptionField(
                 text = text,
                 color = Color.Black,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.W600
+                fontWeight = FontWeight.Medium,
+                fontFamily = Fonts.poppinsFamily
             )
             iconId?.let { painterResource(id = it) }?.let {
                 Icon(

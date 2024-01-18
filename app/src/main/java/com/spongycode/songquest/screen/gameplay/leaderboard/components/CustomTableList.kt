@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.data.model.gameplay.LeaderboardUsersModel
 import com.spongycode.songquest.ui.theme.OptionLightYellow
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Fonts
 import com.spongycode.songquest.util.TimesAgo
 
 const val column1Weight = .3f
@@ -68,7 +69,7 @@ fun CustomTableList(
                         .fillMaxWidth()
                         .padding(5.dp)
                         .height((width / 3).dp)
-                        .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
+                        .clip(RoundedCornerShape(Constants.VERY_SMALL_HEIGHT))
                         .background(OptionLightYellow),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -112,7 +113,8 @@ fun RowScope.NormalText(
             .padding(horizontal = 10.dp, vertical = if (title) 10.dp else 0.dp),
         fontWeight = if (title) FontWeight.W600 else FontWeight.W500,
         textAlign = alignment,
-        fontSize = 18.sp
+        fontSize = 18.sp,
+        fontFamily = Fonts.poppinsFamily
     )
 }
 
@@ -133,14 +135,16 @@ fun RowScope.CategoryDateText(
             text = username,
             fontWeight = FontWeight.W600,
             textAlign = alignment,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            fontFamily = Fonts.poppinsFamily
         )
         Text(
             text = time,
             fontWeight = FontWeight.W400,
             textAlign = alignment,
             fontSize = 12.sp,
-            color = Color.Gray
+            color = Color.Gray,
+            fontFamily = Fonts.poppinsFamily
         )
     }
 }

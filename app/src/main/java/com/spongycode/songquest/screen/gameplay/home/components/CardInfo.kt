@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.spongycode.songquest.R
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.MEDIUM_HEIGHT
+import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.bounceClick
 
 
 @Preview
@@ -42,6 +44,7 @@ fun CardInfo(
 
     Box(
         modifier = Modifier
+            .bounceClick(0.98f)
             .fillMaxWidth()
             .height((width / 3).dp)
             .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
@@ -60,8 +63,9 @@ fun CardInfo(
             Text(
                 text = categoryDisplayText,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                fontFamily = Fonts.poppinsFamily
             )
             Image(
                 modifier = Modifier.size(MEDIUM_HEIGHT + 10.dp),

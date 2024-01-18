@@ -29,6 +29,7 @@ import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.ui.theme.OptionLightGreen
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
+import com.spongycode.songquest.util.Fonts
 
 
 @Composable
@@ -55,10 +56,15 @@ fun HomeScreen(
             "Games played: ${viewModel.gamesPlayed.intValue}",
             trailingIcon = R.drawable.gameplay_count,
             bgColor = OptionLightBlue,
-            onClick = {navController.navigate("history")}
+            onClick = { navController.navigate("history") }
         )
 
-        Text(text = "Pick a category", fontSize = 20.sp, fontWeight = FontWeight.W600)
+        Text(
+            text = "Pick a category",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W600,
+            fontFamily = Fonts.poppinsFamily
+        )
 
         Box {
             Column {
@@ -102,7 +108,7 @@ fun HomeScreen(
             "Leaderboard",
             trailingIcon = R.drawable.leader_board_icon,
             bgColor = OptionLightGreen,
-            onClick = {navController.navigate("leaderboard")}
+            onClick = { navController.navigate("leaderboard") }
         )
     }
 }

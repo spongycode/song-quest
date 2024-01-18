@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.spongycode.songquest.util.Fonts
 
 @ExperimentalMaterial3Api
 @Composable
@@ -24,8 +25,9 @@ fun Topbar(onBackPressed: () -> Unit, title: String) {
             Text(
                 color = MaterialTheme.colorScheme.primary,
                 text = title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.W500
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = Fonts.poppinsFamily
             )
         },
         navigationIcon = {

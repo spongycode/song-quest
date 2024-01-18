@@ -24,11 +24,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.data.model.gameplay.LeaderboardUsersModel
 import com.spongycode.songquest.screen.gameplay.leaderboard.LeaderboardViewModel
 import com.spongycode.songquest.screen.gameplay.playing.PlayingViewModel
 import com.spongycode.songquest.util.CategoryConvertor
+import com.spongycode.songquest.util.Fonts
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +60,11 @@ fun CustomDropDownMenu(
                 value = CategoryConvertor.codeToDisplayText(viewModel.selectedCategory.value),
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                textStyle = TextStyle(fontWeight = FontWeight.Bold),
+                textStyle = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = Fonts.poppinsFamily,
+                    fontSize = 18.sp
+                ),
                 modifier = Modifier
                     .menuAnchor()
                     .width(width.dp)
@@ -74,7 +80,13 @@ fun CustomDropDownMenu(
                 categories.forEach { item ->
                     val displayText = CategoryConvertor.codeToDisplayText(item)
                     DropdownMenuItem(
-                        text = { Text(text = displayText) },
+                        text = {
+                            Text(
+                                text = displayText,
+                                fontFamily = Fonts.poppinsFamily,
+                                fontSize = 15.sp
+                            )
+                        },
                         onClick = {
                             viewModel.changeSelectedCategory(item)
                             expanded = false

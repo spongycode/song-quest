@@ -17,6 +17,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants.CIRCULAR_TIMER_RADIUS
+import com.spongycode.songquest.util.Fonts
 
 @Composable
 fun CircularTimer(
@@ -32,7 +33,8 @@ fun CircularTimer(
         fontSize = 20.sp,
         color = Color.Black,
         background = Color.Transparent,
-        fontWeight = FontWeight.W800
+        fontWeight = FontWeight.W800,
+        fontFamily = Fonts.poppinsFamily
     )
 
     val textLayoutResult = remember(textToDraw) {

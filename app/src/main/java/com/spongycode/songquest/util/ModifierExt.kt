@@ -16,10 +16,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 
 enum class ButtonState { Pressed, Idle }
 
-fun Modifier.bounceClick() = composed {
+fun Modifier.bounceClick(minValue: Float = 0.95f) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val scale by animateFloatAsState(
-        if (buttonState == ButtonState.Pressed) 0.95f else 1f,
+        if (buttonState == ButtonState.Pressed) minValue else 1f,
         label = "scale"
     )
 

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.spongycode.songquest.util.Fonts
 
 @Composable
 fun PlaceholderMessageText(text: String) {
@@ -23,7 +24,9 @@ fun PlaceholderMessageText(text: String) {
     ) {
         Text(
             text = text, fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.W600
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.W600,
+            fontFamily = Fonts.poppinsFamily
         )
     }
 }

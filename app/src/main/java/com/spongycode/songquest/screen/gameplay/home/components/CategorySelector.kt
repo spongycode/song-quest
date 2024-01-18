@@ -24,6 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.bounceClick
 
 
 @Composable
@@ -37,6 +39,7 @@ fun CategorySelector(
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
+            .bounceClick(0.98f)
             .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
             .width(width.dp)
             .height((width + 30).dp)
@@ -74,8 +77,9 @@ fun CategorySelector(
             Text(
                 text = categoryDisplayText,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                fontWeight = FontWeight.W600,
+                color = Color.White,
+                fontFamily = Fonts.poppinsFamily
             )
         }
     }

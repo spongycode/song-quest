@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.R
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Fonts
 
 @Composable
 fun PlayingScreenPlaceholder(
@@ -36,9 +37,10 @@ fun PlayingScreenPlaceholder(
         Text(
             modifier = Modifier.padding(top = 200.dp),
             text = text,
-            fontSize = 30.sp,
+            fontSize = 25.sp,
             color = MaterialTheme.colorScheme.background,
-            fontWeight = FontWeight.W600
+            fontWeight = FontWeight.W600,
+            fontFamily = Fonts.poppinsFamily
         )
         Image(
             modifier = Modifier

@@ -150,8 +150,8 @@ fun ForgotPasswordScreen(
 
                         CustomTextField(
                             text = password,
-                            labelText = "Password",
-                            placeHolderText = "Password",
+                            labelText = "New Password",
+                            placeHolderText = "New password",
                             shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
                             singleLine = true,
                             isPasswordVisible = isPasswordVisible,

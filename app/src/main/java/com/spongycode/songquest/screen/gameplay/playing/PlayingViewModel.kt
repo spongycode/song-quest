@@ -143,10 +143,12 @@ class PlayingViewModel @Inject constructor(
                 }
 
                 _currentScore.floatValue += res.data.increment!!
-
-                delay(2000)
-
-                nextQuestion()
+                if (_currentSongIndex.intValue == _questions.size - 1) {
+                    _isGameOver.value = true
+                } else {
+                    delay(500)
+                    nextQuestion()
+                }
             } else {
                 return@launch
             }
@@ -185,9 +187,6 @@ class PlayingViewModel @Inject constructor(
                 mediaPlayer?.start()
                 startTimer()
                 mediaPlayer?.isLooping = true
-//                mediaPlayer?.setOnCompletionListener {
-//                    increase()
-//                }
             }
         }
     }

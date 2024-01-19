@@ -24,7 +24,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Color.Black,
-    primaryContainer = Color(0xFFFAF8F8),
+    primaryContainer = Color(0xFFF1ECEC),
     secondaryContainer = Color(0xFFE2D8D8),
     inversePrimary = Color(0xFF777373),
     secondary = PurpleGrey40,
@@ -43,7 +43,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun SongQuestTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -56,7 +56,7 @@ fun SongQuestTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = if (darkTheme) Color.Black.toArgb() else Color.Gray.toArgb()
+            window.statusBarColor =Color.Black.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

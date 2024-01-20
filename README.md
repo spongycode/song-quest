@@ -8,7 +8,7 @@
 ### Authentication
 - <b>Login:</b> Users can securely log in to their accounts.
 - <b>Registration:</b> New users can easily create accounts to start playing.
-- <b>Password Reset:</b> Reset yout password through the app, and a one-time password will be sent to your email.
+- <b>Password Reset:</b> Reset your password through the app, and a one-time password will be sent to your email.
 ### Gameplay
 - <b>Guess the Answer:</b> Test your knowledge by guessing the correct answer listening the audio.-
 - <b>Multiple Categories:</b> Choose from various exciting categories, each with tailored questions for an engaging gameplay experience.

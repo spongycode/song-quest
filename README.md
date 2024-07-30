@@ -4,6 +4,16 @@
     <p>A fully functional Android quiz game featuring audio challenges, leaderboards, and multiple categories.</p>
 </div>
 
+## Installation
+
+[<img src="https://github.com/user-attachments/assets/5f6c07aa-fe20-4508-90a7-79547dd241dd"
+alt="Get it on Indus App Store"
+height="70">](https://indusapp.store/pad93i9h)
+[<img src="https://github.com/user-attachments/assets/b8d69317-bdd6-4014-96b4-6a6f6f126f4a"
+alt="Get it on GitHub"
+height="70">](https://github.com/spongycode/song-quest/releases/latest)
+
+
 ## Features 🌟
 ### Authentication
 - <b>Login:</b> Users can securely log in to their accounts.
@@ -50,13 +60,6 @@
 - <b>[Compose Navigation](https://developer.android.com/jetpack/compose/navigation):</b> Navigation component for Jetpack Compose.
 - <b>[Material 3](https://m3.material.io/):</b> Latest Material Design system for unified app aesthetics.
 - <b>[Datastore](https://developer.android.com/topic/libraries/architecture/datastore):</b> Modern local data storage solution.
-
-
-## Installation
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
-alt="Get it on GitHub"
-height="80">](https://github.com/spongycode/song-quest/releases/latest)
-
 
 ## Backend details
 

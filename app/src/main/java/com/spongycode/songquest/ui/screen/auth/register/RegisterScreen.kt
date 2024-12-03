@@ -68,14 +68,11 @@ fun RegisterScreenRoot(
                     )
                 }
 
-                RegisterViewEffect.NavigateToHome -> {
-                    navController.popBackStack()
-                    navController.navigate("home")
-                }
-
-                RegisterViewEffect.NavigateToLogin -> {
-                    navController.popBackStack()
-                    navController.navigate("login")
+                is RegisterViewEffect.Navigate -> {
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(it.route)
                 }
             }
         }

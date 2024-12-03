@@ -2,16 +2,20 @@ package com.spongycode.songquest.ui.screen.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Checking
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Error
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.emailSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.gamesPlayedSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.refreshTokenSession
+import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Idle
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Success
-import com.spongycode.songquest.ui.screen.auth.register.RegisterViewEffect.NavigateToHome
-import com.spongycode.songquest.ui.screen.auth.register.RegisterViewEffect.NavigateToLogin
 import com.spongycode.songquest.ui.screen.auth.register.RegisterViewEffect.ShowSnackBar
+import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -67,13 +71,13 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.Register -> registerUser()
             RegisterEvent.NavigateToHome -> {
                 viewModelScope.launch {
-                    _viewEffect.emit(NavigateToHome)
+                    _viewEffect.emit(RegisterViewEffect.Navigate(route = HOME_SCREEN))
                 }
             }
 
             RegisterEvent.NavigateToLogin -> {
                 viewModelScope.launch {
-                    _viewEffect.emit(NavigateToLogin)
+                    _viewEffect.emit(RegisterViewEffect.Navigate(route = LOGIN_SCREEN))
                 }
             }
         }
@@ -106,23 +110,23 @@ class RegisterViewModel @Inject constructor(
                     datastoreRepository.storeListString(
                         listOf(
                             Pair(
-                                DatastoreRepositoryImpl.accessTokenSession,
+                                accessTokenSession,
                                 res.data?.accessToken.toString()
                             ),
                             Pair(
-                                DatastoreRepositoryImpl.refreshTokenSession,
+                                refreshTokenSession,
                                 res.data?.refreshToken.toString()
                             ),
                             Pair(
-                                DatastoreRepositoryImpl.usernameSession,
+                                usernameSession,
                                 res.data?.user?.username.toString()
                             ),
                             Pair(
-                                DatastoreRepositoryImpl.emailSession,
+                                emailSession,
                                 res.data?.user?.email.toString()
                             ),
                             Pair(
-                                DatastoreRepositoryImpl.gamesPlayedSession,
+                                gamesPlayedSession,
                                 0.toString()
                             )
                         )
@@ -155,6 +159,5 @@ data class RegisterUiState(
 
 sealed interface RegisterViewEffect {
     data class ShowSnackBar(val message: String) : RegisterViewEffect
-    data object NavigateToHome : RegisterViewEffect
-    data object NavigateToLogin : RegisterViewEffect
+    data class Navigate(val route: String, val popBackStack: Boolean = true) : RegisterViewEffect
 }

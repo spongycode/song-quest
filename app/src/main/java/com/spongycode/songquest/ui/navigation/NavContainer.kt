@@ -13,7 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordScreen
-import com.spongycode.songquest.ui.screen.auth.login.LoginScreen
+import com.spongycode.songquest.ui.screen.auth.login.LoginScreenRoot
 import com.spongycode.songquest.ui.screen.auth.register.RegisterScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverScreen
 import com.spongycode.songquest.ui.screen.gameplay.history.HistoryScreen
@@ -21,7 +21,12 @@ import com.spongycode.songquest.ui.screen.gameplay.home.HomeScreen
 import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardScreen
 import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingScreen
 import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileScreen
-import com.spongycode.songquest.ui.screen.starter.StarterScreen
+import com.spongycode.songquest.ui.screen.starter.SplashScreenRoot
+import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
+import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
+import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
+import com.spongycode.songquest.util.Constants.SPLASH_SCREEN
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController") }
 
@@ -32,13 +37,13 @@ fun NavContainer(startDestination: String) {
 
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(navController = navController, startDestination = startDestination) {
-            composable(route = "starter") {
-                StarterScreen()
+            composable(route = SPLASH_SCREEN) {
+                SplashScreenRoot()
             }
-            composable(route = "register") {
+            composable(route = REGISTER_SCREEN) {
                 RegisterScreenRoot()
             }
-            composable(route = "login",
+            composable(route = LOGIN_SCREEN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
@@ -53,9 +58,9 @@ fun NavContainer(startDestination: String) {
                     )
                 }
             ) {
-                LoginScreen()
+                LoginScreenRoot()
             }
-            composable(route = "forgotpassword",
+            composable(route = FORGOT_PASSWORD_SCREEN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start, tween(300)
@@ -72,7 +77,7 @@ fun NavContainer(startDestination: String) {
             ) {
                 ForgotPasswordScreen()
             }
-            composable(route = "home") {
+            composable(route = HOME_SCREEN) {
                 HomeScreen()
             }
             composable(route = "playing/{category}") {

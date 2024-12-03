@@ -1,7 +1,5 @@
 package com.spongycode.songquest.ui.screen.auth.login
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
@@ -11,11 +9,16 @@ import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companio
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.ui.screen.ui_events.SnackBarEvent
+import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
+import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,38 +27,61 @@ class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
-    private val _emailOrUsername = mutableStateOf("")
-    val emailOrUsername: State<String> = _emailOrUsername
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _password = mutableStateOf("")
-    val password: State<String> = _password
-
-    private val _isPasswordVisible = mutableStateOf(false)
-    val isPasswordVisible: State<Boolean> = _isPasswordVisible
-
-    private val _loginState = mutableStateOf<LoginState>(LoginState.Idle)
-    val loginState: State<LoginState> = _loginState
-
-    private val _snackBarFlow = MutableSharedFlow<SnackBarEvent>()
-    val snackBarFlow = _snackBarFlow.asSharedFlow()
+    private val _viewEffect = MutableSharedFlow<LoginViewEffect>()
+    val viewEffect: SharedFlow<LoginViewEffect> = _viewEffect.asSharedFlow()
 
     fun onEvent(event: LoginEvent) {
-        if (_loginState.value == LoginState.Error) {
-            _loginState.value = LoginState.Idle
+        if (_uiState.value.loginState == LoginState.Error) {
+            _uiState.value = _uiState.value.copy(
+                loginState = LoginState.Idle
+            )
         }
         when (event) {
-            is LoginEvent.EnteredEmailOrUsername -> _emailOrUsername.value = event.value
-            is LoginEvent.EnteredPassword -> _password.value = event.value
-            is LoginEvent.TogglePasswordVisibility -> _isPasswordVisible.value =
-                !_isPasswordVisible.value
+            is LoginEvent.EnteredEmailOrUsername -> _uiState.value = _uiState.value.copy(
+                emailOrUsername = event.value
+            )
 
-            is LoginEvent.Login -> loginUser()
+            is LoginEvent.EnteredPassword -> _uiState.value = _uiState.value.copy(
+                password = event.value
+            )
+
+            LoginEvent.TogglePasswordVisibility -> _uiState.value = _uiState.value.copy(
+                isPasswordVisible = _uiState.value.isPasswordVisible.not()
+            )
+
+            LoginEvent.Login -> loginUser()
+
+            LoginEvent.NavigateToForgotPassword -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(
+                        LoginViewEffect.Navigate(
+                            route = FORGOT_PASSWORD_SCREEN,
+                            popBackStack = false
+                        )
+                    )
+                }
+            }
+
+            LoginEvent.NavigateToHome -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(LoginViewEffect.Navigate(route = HOME_SCREEN))
+                }
+            }
+
+            LoginEvent.NavigateToRegister -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(LoginViewEffect.Navigate(route = REGISTER_SCREEN ))
+                }
+            }
         }
     }
 
     private fun validationCheck(): String? {
-        return ValidationHelper.validateEmailOrUsername(_emailOrUsername.value)
-            ?: ValidationHelper.validatePassword(_password.value)
+        return ValidationHelper.validateEmailOrUsername(_uiState.value.emailOrUsername)
+            ?: ValidationHelper.validatePassword(_uiState.value.password)
     }
 
     private fun loginUser() {
@@ -63,55 +89,69 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (validationError != null) {
-                _snackBarFlow.emit(
-                    SnackBarEvent(
-                        show = true,
-                        text = validationError
-                    )
-                )
+                _viewEffect.emit(LoginViewEffect.ShowSnackBar(message = validationError))
                 return@launch
             }
 
-            _loginState.value = LoginState.Checking
+            _uiState.value = _uiState.value.copy(
+                loginState = LoginState.Checking
+            )
             try {
                 val res = authRepository.login(
-                    _emailOrUsername.value,
-                    _password.value
+                    _uiState.value.emailOrUsername,
+                    _uiState.value.password
                 )
                 if (res?.status == "success") {
-                    datastoreRepository.storeString(
-                        key = accessTokenSession,
-                        value = res.data?.accessToken.toString()
-                    )
-                    datastoreRepository.storeString(
-                        key = refreshTokenSession,
-                        value = res.data?.refreshToken.toString()
-                    )
-                    datastoreRepository.storeString(
-                        key = usernameSession,
-                        value = res.data?.user?.username.toString()
-                    )
-                    datastoreRepository.storeString(
-                        key = emailSession,
-                        value = res.data?.user?.email.toString()
-                    )
-                    datastoreRepository.storeString(
-                        key = gamesPlayedSession,
-                        value = res.data?.user?.gamesPlayed.toString()
-                    )
-                    _loginState.value = LoginState.Success
-                } else {
-                    _snackBarFlow.emit(
-                        SnackBarEvent(
-                            show = true,
-                            text = res?.message.toString()
+                    datastoreRepository.storeListString(
+                        listOf(
+                            Pair(
+                                accessTokenSession,
+                                res.data?.accessToken.toString()
+                            ),
+                            Pair(
+                                refreshTokenSession,
+                                res.data?.refreshToken.toString()
+                            ),
+                            Pair(
+                                usernameSession,
+                                res.data?.user?.username.toString()
+                            ),
+                            Pair(
+                                emailSession,
+                                res.data?.user?.email.toString()
+                            ),
+                            Pair(
+                                gamesPlayedSession,
+                                res.data?.user?.gamesPlayed.toString()
+                            )
                         )
                     )
-                    _loginState.value = LoginState.Error
+                    _uiState.value = _uiState.value.copy(
+                        loginState = LoginState.Success
+                    )
+                } else {
+                    _viewEffect.emit(LoginViewEffect.ShowSnackBar(message = res?.message.toString()))
+                    _uiState.value = _uiState.value.copy(
+                        loginState = LoginState.Error
+                    )
                 }
             } catch (_: Exception) {
-                _loginState.value = LoginState.Error
+                _uiState.value = _uiState.value.copy(
+                    loginState = LoginState.Error
+                )
             }
         }
     }
+}
+
+data class LoginUiState(
+    val emailOrUsername: String = "",
+    val password: String = "",
+    val isPasswordVisible: Boolean = false,
+    val loginState: LoginState = LoginState.Idle
+)
+
+sealed interface LoginViewEffect {
+    data class ShowSnackBar(val message: String) : LoginViewEffect
+    data class Navigate(val route: String, val popBackStack: Boolean = true) : LoginViewEffect
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,20 +32,36 @@ import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun StarterScreen(
-    viewModel: StarterViewModel = hiltViewModel()
+fun SplashScreenRoot(
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
-    LaunchedEffect(key1 = true) {
-        viewModel.navigationFlow.collectLatest { event ->
-            if (event.route != null) {
-                navController.popBackStack()
-                navController.navigate(event.route)
+    LaunchedEffect(null) {
+        viewModel.viewEffect.collectLatest {
+            when (it) {
+                is SplashViewEffect.Navigate -> {
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(it.route)
+                }
             }
         }
     }
+
+    SplashScreen(onEvent = viewModel::onEvent)
+}
+
+@Composable
+fun SplashScreen(
+    modifier: Modifier = Modifier,
+    onEvent: (SplashEvent) -> Unit = {}
+) {
+    LaunchedEffect(null) {
+        onEvent(SplashEvent.RefreshToken)
+    }
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         Column(
@@ -89,4 +106,10 @@ fun StarterScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewStarterScreen() {
+    SplashScreen()
 }

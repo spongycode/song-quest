@@ -39,4 +39,11 @@ object Constants {
 
     const val USERNAME_MIN_LENGTH = 4
     const val USERNAME_MAX_LENGTH = 15
+
+    // screen route names
+    const val SPLASH_SCREEN = "splash"
+    const val REGISTER_SCREEN = "register"
+    const val LOGIN_SCREEN = "register"
+    const val HOME_SCREEN = "home"
+    const val FORGOT_PASSWORD_SCREEN = "forgot_password"
 }

@@ -25,17 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun StarterScreen(
-    navController: NavHostController,
     viewModel: StarterViewModel = hiltViewModel()
 ) {
-
+    val navController = LocalNavController.current
     LaunchedEffect(key1 = true) {
         viewModel.navigationFlow.collectLatest { event ->
             if (event.route != null) {

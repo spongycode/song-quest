@@ -32,6 +32,14 @@ class DatastoreRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun storeListString(list: List<Pair<Preferences.Key<String>, String>>) {
+        list.map {
+            context.preferencesDataStore.edit { setting ->
+                setting[it.first] = it.second
+            }
+        }
+    }
+
     companion object {
         private val Context.preferencesDataStore: DataStore<Preferences> by preferencesDataStore(
             name = PREFERENCES_NAME

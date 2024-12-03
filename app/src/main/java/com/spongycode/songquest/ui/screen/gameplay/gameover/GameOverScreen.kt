@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
 import com.spongycode.songquest.ui.screen.gameplay.components.PlaceholderMessageText
 import com.spongycode.songquest.ui.screen.gameplay.gameover.components.GameOverDisplayCard
@@ -29,10 +29,9 @@ import com.spongycode.songquest.util.Fonts
 @Composable
 fun GameOverScreen(
     gameId: String,
-    navController: NavHostController,
     viewModel: GameOverViewModel = hiltViewModel()
 ) {
-
+    val navController = LocalNavController.current
     viewModel.saveGame(gameId)
 
     val game = viewModel.game.value

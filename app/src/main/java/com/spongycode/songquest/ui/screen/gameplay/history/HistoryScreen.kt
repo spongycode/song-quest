@@ -7,7 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.components.PlaceholderMessageText
 import com.spongycode.songquest.ui.screen.gameplay.history.components.CustomList
 import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
@@ -17,9 +17,9 @@ import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    viewModel: HistoryViewModel = hiltViewModel(),
-    navController: NavHostController,
+    viewModel: HistoryViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val games = viewModel.games
     Scaffold(topBar = {
         Topbar({ navController.navigateUp() }, "Your games")

@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -26,25 +25,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
 import com.spongycode.songquest.ui.screen.auth.components.CustomTextField
 import com.spongycode.songquest.ui.screen.auth.components.TitleText
-import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordState.*
+import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordState.Checking
+import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordState.Error
+import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordState.Idle
+import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordState.Success
 import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.Constants
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ForgotPasswordScreen(
-    navController: NavHostController,
     viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val email = viewModel.email.value
     val otp = viewModel.otp.value
     val password = viewModel.password.value

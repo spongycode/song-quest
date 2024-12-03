@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
 import com.spongycode.songquest.ui.screen.auth.components.CustomTextField
 import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
@@ -38,12 +38,12 @@ import com.spongycode.songquest.ui.theme.OptionDarkRed
 import com.spongycode.songquest.util.Constants
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
-    navController: NavHostController,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val profileState = viewModel.profileState.value

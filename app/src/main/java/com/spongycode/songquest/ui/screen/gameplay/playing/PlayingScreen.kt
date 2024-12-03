@@ -11,17 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenPlaceholder
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenSuccess
 
 @Composable
 fun PlayingScreen(
     category: String,
-    navController: NavHostController,
     viewModel: PlayingViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val createGameState = viewModel.createGameState.value
     val isGameOver = viewModel.isGameOver.value
 

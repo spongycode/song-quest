@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.home.components.CardInfo
 import com.spongycode.songquest.ui.screen.gameplay.home.components.CategorySelector
 import com.spongycode.songquest.ui.screen.gameplay.home.components.Header
@@ -31,12 +31,11 @@ import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
 import com.spongycode.songquest.util.Fonts
 
-
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController
 ) {
+    val navController = LocalNavController.current
     val username = viewModel.username.value
     LaunchedEffect(Unit) {
         viewModel.getData()

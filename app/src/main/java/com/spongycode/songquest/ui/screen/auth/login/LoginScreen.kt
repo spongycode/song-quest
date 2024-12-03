@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -30,8 +29,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.spongycode.songquest.R
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomAnnotatedString
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
 import com.spongycode.songquest.ui.screen.auth.components.CustomTextField
@@ -43,13 +42,12 @@ import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val emailOrUsername = viewModel.emailOrUsername.value
     val password = viewModel.password.value
     val isPasswordVisible = viewModel.isPasswordVisible.value

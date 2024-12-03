@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.components.PlaceholderMessageText
 import com.spongycode.songquest.ui.screen.gameplay.leaderboard.components.CustomDropDownMenu
 import com.spongycode.songquest.ui.screen.gameplay.leaderboard.components.CustomTableList
@@ -21,9 +21,9 @@ import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LeaderboardScreen(
-    viewModel: LeaderboardViewModel = hiltViewModel(),
-    navController: NavHostController,
+    viewModel: LeaderboardViewModel = hiltViewModel()
 ) {
+    val navController = LocalNavController.current
     val selectedCategory = viewModel.selectedCategory
     val selectedLeaderboardList = viewModel.leaderboardDatabase[selectedCategory.value]
 

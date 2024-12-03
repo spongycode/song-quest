@@ -1,16 +1,16 @@
 package com.spongycode.songquest.ui.screen.auth.forgot_password
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.domain.repository.AuthRepository
-import com.spongycode.songquest.ui.screen.ui_events.SnackBarEvent
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,115 +18,137 @@ import javax.inject.Inject
 class ForgotPasswordViewModel @Inject constructor(
     private val repository: AuthRepository
 ) : ViewModel() {
-    private val _email = mutableStateOf("")
-    val email: State<String> = _email
 
-    private val _password = mutableStateOf("")
-    val password: State<String> = _password
+    private val _uiState = MutableStateFlow(ForgotPasswordUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _otp = mutableStateOf("")
-    val otp: State<String> = _otp
-
-    private val _isPasswordVisible = mutableStateOf(false)
-    val isPasswordVisible: State<Boolean> = _isPasswordVisible
-
-    private val _forgotPasswordState = mutableStateOf<ForgotPasswordState>(ForgotPasswordState.Idle)
-    val forgotPasswordState: State<ForgotPasswordState> = _forgotPasswordState
-
-    private val _changePasswordState = mutableStateOf<ForgotPasswordState>(ForgotPasswordState.Idle)
-    val changePasswordState: State<ForgotPasswordState> = _changePasswordState
-
-    private val _snackBarFlow = MutableSharedFlow<SnackBarEvent>()
-    val snackBarFlow = _snackBarFlow.asSharedFlow()
+    private val _viewEffect = MutableSharedFlow<ForgotPasswordViewEffect>()
+    val viewEffect: SharedFlow<ForgotPasswordViewEffect> = _viewEffect.asSharedFlow()
 
     fun onEvent(event: ForgotPasswordEvent) {
-        if (_forgotPasswordState.value == ForgotPasswordState.Error) {
-            _forgotPasswordState.value = ForgotPasswordState.Idle
+        if (_uiState.value.forgotPasswordState == ForgotPasswordState.Error) {
+            _uiState.value = _uiState.value.copy(
+                forgotPasswordState = ForgotPasswordState.Idle
+            )
         }
-        if (_changePasswordState.value == ForgotPasswordState.Error) {
-            _changePasswordState.value = ForgotPasswordState.Idle
+        if (_uiState.value.changePasswordState == ForgotPasswordState.Error) {
+            _uiState.value = _uiState.value.copy(
+                changePasswordState = ForgotPasswordState.Idle
+            )
         }
         when (event) {
-            is ForgotPasswordEvent.EnteredEmail -> _email.value = event.value
-            is ForgotPasswordEvent.EnteredPassword -> _password.value = event.value
-            is ForgotPasswordEvent.EnteredOTP -> _otp.value = event.value
-            is ForgotPasswordEvent.TogglePasswordVisibility -> _isPasswordVisible.value =
-                !_isPasswordVisible.value
+            is ForgotPasswordEvent.EnteredEmail -> _uiState.value =
+                _uiState.value.copy(email = event.value)
 
-            is ForgotPasswordEvent.SendResetPasswordEmail -> sendForgotPasswordEmail()
+            is ForgotPasswordEvent.EnteredPassword -> _uiState.value =
+                _uiState.value.copy(password = event.value)
+
+            is ForgotPasswordEvent.EnteredOTP -> _uiState.value =
+                _uiState.value.copy(otp = event.value)
+
+            is ForgotPasswordEvent.Navigate -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(
+                        ForgotPasswordViewEffect.Navigate(
+                            route = event.route,
+                            popBackStack = event.popBackStack
+                        )
+                    )
+                }
+            }
+
+            ForgotPasswordEvent.TogglePasswordVisibility -> _uiState.value = _uiState.value.copy(
+                isPasswordVisible =
+                _uiState.value.isPasswordVisible.not()
+            )
+
+            ForgotPasswordEvent.SendResetPasswordEmail -> sendForgotPasswordEmail()
             ForgotPasswordEvent.SendChangePassword -> changePassword()
         }
     }
 
     private fun changePassword() {
-        val validationError = ValidationHelper.validatePassword(_password.value)
-            ?: ValidationHelper.validateOTP(_otp.value)
+        val validationError = ValidationHelper.validatePassword(_uiState.value.password)
+            ?: ValidationHelper.validateOTP(_uiState.value.otp)
         viewModelScope.launch {
             if (validationError != null) {
-                _snackBarFlow.emit(
-                    SnackBarEvent(
-                        show = true,
-                        text = validationError
-                    )
-                )
+                _viewEffect.emit(ForgotPasswordViewEffect.ShowSnackBar(message = validationError))
                 return@launch
             }
 
-            _changePasswordState.value = ForgotPasswordState.Checking
+            _uiState.value = _uiState.value.copy(
+                changePasswordState = ForgotPasswordState.Checking
+            )
             try {
                 val res = repository.changePassword(
                     UserModel(
-                        email = email.value, otp = otp.value, password = password.value
+                        email = _uiState.value.email,
+                        otp = _uiState.value.otp,
+                        password = _uiState.value.password
                     )
                 )
                 if (res?.status == "success") {
-                    _changePasswordState.value = ForgotPasswordState.Success
-                } else {
-                    _snackBarFlow.emit(
-                        SnackBarEvent(
-                            show = true,
-                            text = res?.message.toString()
-                        )
+                    _uiState.value = _uiState.value.copy(
+                        changePasswordState = ForgotPasswordState.Success
                     )
-                    _changePasswordState.value = ForgotPasswordState.Error
+                } else {
+                    _viewEffect.emit(ForgotPasswordViewEffect.ShowSnackBar(message = res?.message.toString()))
+                    _uiState.value = _uiState.value.copy(
+                        changePasswordState = ForgotPasswordState.Error
+                    )
                 }
             } catch (_: Exception) {
-                _changePasswordState.value = ForgotPasswordState.Error
+                _uiState.value = _uiState.value.copy(
+                    changePasswordState = ForgotPasswordState.Error
+                )
             }
         }
     }
 
     private fun sendForgotPasswordEmail() {
-        val validationError = ValidationHelper.validateEmail(_email.value)
+        val validationError = ValidationHelper.validateEmail(_uiState.value.email)
 
         viewModelScope.launch {
             if (validationError != null) {
-                _snackBarFlow.emit(
-                    SnackBarEvent(
-                        show = true,
-                        text = validationError
-                    )
-                )
+                _viewEffect.emit(ForgotPasswordViewEffect.ShowSnackBar(message = validationError))
                 return@launch
             }
 
-            _forgotPasswordState.value = ForgotPasswordState.Checking
+            _uiState.value = _uiState.value.copy(
+                forgotPasswordState = ForgotPasswordState.Checking
+            )
             try {
-                val res = repository.forgotPasswordEmail(_email.value)
+                val res = repository.forgotPasswordEmail(_uiState.value.email)
                 if (res?.status == "success") {
-                    _forgotPasswordState.value = ForgotPasswordState.Success
-                } else {
-                    _snackBarFlow.emit(
-                        SnackBarEvent(
-                            show = true,
-                            text = res?.message.toString()
-                        )
+                    _uiState.value = _uiState.value.copy(
+                        forgotPasswordState = ForgotPasswordState.Success
                     )
-                    _forgotPasswordState.value = ForgotPasswordState.Error
+                } else {
+                    _viewEffect.emit(ForgotPasswordViewEffect.ShowSnackBar(message = res?.message.toString()))
+                    _uiState.value = _uiState.value.copy(
+                        forgotPasswordState = ForgotPasswordState.Error
+                    )
                 }
             } catch (_: Exception) {
-                _forgotPasswordState.value = ForgotPasswordState.Error
+                _uiState.value = _uiState.value.copy(
+                    forgotPasswordState = ForgotPasswordState.Error
+                )
             }
         }
     }
+}
+
+data class ForgotPasswordUiState(
+    val email: String = "",
+    val password: String = "",
+    val otp: String = "",
+    val isPasswordVisible: Boolean = false,
+    val forgotPasswordState: ForgotPasswordState = ForgotPasswordState.Idle,
+    val changePasswordState: ForgotPasswordState = ForgotPasswordState.Idle
+)
+
+sealed interface ForgotPasswordViewEffect {
+    data class ShowSnackBar(val message: String) : ForgotPasswordViewEffect
+    data class Navigate(val route: String, val popBackStack: Boolean = true) :
+        ForgotPasswordViewEffect
 }

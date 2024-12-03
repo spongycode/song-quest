@@ -9,9 +9,6 @@ import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companio
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
-import com.spongycode.songquest.util.Constants.HOME_SCREEN
-import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,34 +45,17 @@ class LoginViewModel @Inject constructor(
                 password = event.value
             )
 
+            is LoginEvent.Navigate -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(LoginViewEffect.Navigate(event.route, event.popBackStack))
+                }
+            }
+
             LoginEvent.TogglePasswordVisibility -> _uiState.value = _uiState.value.copy(
                 isPasswordVisible = _uiState.value.isPasswordVisible.not()
             )
 
             LoginEvent.Login -> loginUser()
-
-            LoginEvent.NavigateToForgotPassword -> {
-                viewModelScope.launch {
-                    _viewEffect.emit(
-                        LoginViewEffect.Navigate(
-                            route = FORGOT_PASSWORD_SCREEN,
-                            popBackStack = false
-                        )
-                    )
-                }
-            }
-
-            LoginEvent.NavigateToHome -> {
-                viewModelScope.launch {
-                    _viewEffect.emit(LoginViewEffect.Navigate(route = HOME_SCREEN))
-                }
-            }
-
-            LoginEvent.NavigateToRegister -> {
-                viewModelScope.launch {
-                    _viewEffect.emit(LoginViewEffect.Navigate(route = REGISTER_SCREEN ))
-                }
-            }
         }
     }
 

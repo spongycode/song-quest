@@ -12,19 +12,26 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordScreen
+import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordScreenRoot
 import com.spongycode.songquest.ui.screen.auth.login.LoginScreenRoot
 import com.spongycode.songquest.ui.screen.auth.register.RegisterScreenRoot
-import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverScreen
-import com.spongycode.songquest.ui.screen.gameplay.history.HistoryScreen
-import com.spongycode.songquest.ui.screen.gameplay.home.HomeScreen
+import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverScreenRoot
+import com.spongycode.songquest.ui.screen.gameplay.history.HistoryScreenRoot
+import com.spongycode.songquest.ui.screen.gameplay.home.HomeScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardScreen
 import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingScreen
 import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileScreen
 import com.spongycode.songquest.ui.screen.starter.SplashScreenRoot
+import com.spongycode.songquest.util.Constants.CATEGORY
 import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
+import com.spongycode.songquest.util.Constants.GAME_ID
+import com.spongycode.songquest.util.Constants.GAME_OVER_SCREEN
+import com.spongycode.songquest.util.Constants.HISTORY_SCREEN
 import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.LEADERBOARD_SCREEN
 import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
+import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
+import com.spongycode.songquest.util.Constants.PROFILE_SCREEN
 import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import com.spongycode.songquest.util.Constants.SPLASH_SCREEN
 
@@ -75,20 +82,20 @@ fun NavContainer(startDestination: String) {
                     )
                 }
             ) {
-                ForgotPasswordScreen()
+                ForgotPasswordScreenRoot()
             }
             composable(route = HOME_SCREEN) {
-                HomeScreen()
+                HomeScreenRoot()
             }
-            composable(route = "playing/{category}") {
-                val category = it.arguments?.getString("category")
+            composable(route = "$PLAYING_SCREEN/{$CATEGORY}") {
+                val category = it.arguments?.getString(CATEGORY)
                 PlayingScreen(category = category!!)
             }
-            composable(route = "gameover/{gameId}") {
-                val gameId = it.arguments?.getString("gameId")
-                GameOverScreen(gameId = gameId!!)
+            composable(route = "$GAME_OVER_SCREEN/{$GAME_ID}") {
+                val gameId = it.arguments?.getString(GAME_ID)
+                GameOverScreenRoot(gameId = gameId!!)
             }
-            composable(route = "profile",
+            composable(route = PROFILE_SCREEN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start, tween(100)
@@ -104,7 +111,7 @@ fun NavContainer(startDestination: String) {
                 }) {
                 ProfileScreen()
             }
-            composable(route = "history",
+            composable(route = HISTORY_SCREEN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start, tween(100)
@@ -118,9 +125,9 @@ fun NavContainer(startDestination: String) {
                         AnimatedContentTransitionScope.SlideDirection.End, tween(100)
                     )
                 }) {
-                HistoryScreen()
+                HistoryScreenRoot()
             }
-            composable(route = "leaderboard",
+            composable(route = LEADERBOARD_SCREEN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Start, tween(100)

@@ -42,6 +42,9 @@ import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.ComposeLocalWrapper
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
+import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import com.spongycode.songquest.util.Fonts
 import kotlinx.coroutines.flow.collectLatest
 
@@ -146,7 +149,12 @@ fun LoginScreen(
                     fontWeight = FontWeight.W600,
                     modifier = Modifier
                         .clickable {
-                            onEvent(LoginEvent.NavigateToForgotPassword)
+                            onEvent(
+                                LoginEvent.Navigate(
+                                    route = FORGOT_PASSWORD_SCREEN,
+                                    popBackStack = false
+                                )
+                            )
                         }
                 )
 
@@ -157,7 +165,7 @@ fun LoginScreen(
                         keyboardController?.hide()
                         focusManager.clearFocus()
                         if (uiState.loginState == LoginState.Success) {
-                            onEvent(LoginEvent.NavigateToHome)
+                            onEvent(LoginEvent.Navigate(route = HOME_SCREEN))
                         } else if (uiState.loginState == LoginState.Idle) {
                             onEvent(LoginEvent.Login)
                         }
@@ -186,7 +194,7 @@ fun LoginScreen(
             tag = "register",
             str2 = "Register here",
             onClick = {
-                onEvent(LoginEvent.NavigateToRegister)
+                onEvent(LoginEvent.Navigate(route = REGISTER_SCREEN))
             }
         )
     }

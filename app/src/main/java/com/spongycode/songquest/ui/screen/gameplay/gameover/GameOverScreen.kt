@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
 import com.spongycode.songquest.ui.screen.gameplay.components.PlaceholderMessageText
@@ -24,21 +28,50 @@ import com.spongycode.songquest.ui.screen.gameplay.gameover.components.GameOverD
 import com.spongycode.songquest.ui.theme.OptionDarkBlue
 import com.spongycode.songquest.ui.theme.OptionDarkGreen
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
 import com.spongycode.songquest.util.Fonts
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun GameOverScreen(
+fun GameOverScreenRoot(
     gameId: String,
     viewModel: GameOverViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
-    viewModel.saveGame(gameId)
+    LaunchedEffect(null) {
+        viewModel.onEvent(GameOverEvent.GetData)
+        viewModel.onEvent(GameOverEvent.SaveGame(gameId))
+        viewModel.viewEffect.collectLatest {
+            when (it) {
+                is GameOverViewEffect.Navigate -> {
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    if (it.navigateUp) {
+                        navController.navigateUp()
+                    }
+                    it.route?.let { route ->
+                        navController.navigate(route)
+                    }
+                }
+            }
+        }
+    }
+    GameOverScreen(
+        modifier = Modifier.fillMaxSize(),
+        uiState = viewModel.uiState.collectAsState().value,
+        onEvent = viewModel::onEvent
+    )
+}
 
-    val game = viewModel.game.value
-    val gameOverState = viewModel.gameOverState.value
-
+@Composable
+fun GameOverScreen(
+    modifier: Modifier = Modifier,
+    uiState: GameOverUiState = GameOverUiState(),
+    onEvent: (GameOverEvent) -> Unit = {}
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,17 +92,22 @@ fun GameOverScreen(
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when (gameOverState) {
+            when (uiState.gameOverState) {
                 GameOverState.Error -> PlaceholderMessageText(text = "Oops, some error occurred.")
                 GameOverState.Loading -> PlaceholderMessageText(text = "Saving your game..")
                 GameOverState.Success -> {
-                    GameOverDisplayCard(game, viewModel.username.value)
+                    GameOverDisplayCard(uiState.game, uiState.username)
 
                     Column {
                         CustomButton(
                             onClick = {
-                                navController.navigateUp()
-                                navController.navigate("playing/${viewModel.game.value.category}")
+                                onEvent(
+                                    GameOverEvent.Navigate(
+                                        route = "$PLAYING_SCREEN/${uiState.game.category}",
+                                        navigateUp = true,
+                                        popBackStack = false
+                                    )
+                                )
                             },
                             containerColor = OptionDarkBlue,
                             contentColor = Color.White,
@@ -79,7 +117,14 @@ fun GameOverScreen(
                         Spacer(modifier = Modifier.height(Constants.SMALL_HEIGHT))
 
                         CustomButton(
-                            onClick = { navController.navigateUp() },
+                            onClick = {
+                                onEvent(
+                                    GameOverEvent.Navigate(
+                                        navigateUp = true,
+                                        popBackStack = false
+                                    )
+                                )
+                            },
                             containerColor = OptionDarkGreen,
                             contentColor = Color.White,
                             displayText = "HOME"
@@ -89,4 +134,36 @@ fun GameOverScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewGameOverScreenSuccess() {
+    GameOverScreen(
+        uiState = GameOverUiState(
+            username = "dummy_user",
+            game = GameModel().dummy(),
+            gameOverState = GameOverState.Success
+        )
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewGameOverScreenLoading() {
+    GameOverScreen(
+        uiState = GameOverUiState(
+            gameOverState = GameOverState.Loading
+        )
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewGameOverScreenError() {
+    GameOverScreen(
+        uiState = GameOverUiState(
+            gameOverState = GameOverState.Error
+        )
+    )
 }

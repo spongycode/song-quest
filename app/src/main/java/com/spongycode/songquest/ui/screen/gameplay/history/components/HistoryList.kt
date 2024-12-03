@@ -2,7 +2,6 @@ package com.spongycode.songquest.ui.screen.gameplay.history.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.data.model.gameplay.GameModel
@@ -45,10 +44,16 @@ const val column3Weight: Float = .4f
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CustomList(games: SnapshotStateList<GameModel>, topPadding: Dp) {
+fun HistoryList(
+    games: List<GameModel> = emptyList()
+) {
     val configuration = LocalConfiguration.current
     val width = (configuration.screenWidthDp - 20) / 2
-    Column(Modifier.padding(start = 10.dp, end = 10.dp, top = topPadding)) {
+    Column(
+        Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(start = 10.dp, end = 10.dp)
+    ) {
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -61,12 +66,12 @@ fun CustomList(games: SnapshotStateList<GameModel>, topPadding: Dp) {
             NormalText(text = "Accurate", weight = column2Weight, title = true)
             NormalText(text = "Category", weight = column3Weight, title = true)
         }
-        Divider(
-            color = Color.LightGray,
+        HorizontalDivider(
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            color = Color.LightGray
         )
         LazyColumn {
             itemsIndexed(games) { _, game ->
@@ -104,7 +109,6 @@ fun CustomList(games: SnapshotStateList<GameModel>, topPadding: Dp) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.NormalText(
     text: String,
@@ -125,7 +129,6 @@ fun RowScope.NormalText(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.CategoryDateText(
     category: String,
@@ -156,4 +159,16 @@ fun RowScope.CategoryDateText(
             fontFamily = Fonts.poppinsFamily
         )
     }
+}
+
+@Preview
+@Composable
+private fun PreviewHistoryList() {
+    HistoryList(
+        games = listOf(
+            GameModel().dummy(),
+            GameModel().dummy(),
+            GameModel().dummy(),
+        )
+    )
 }

@@ -1,6 +1,6 @@
 package com.spongycode.songquest.ui.screen.auth.forgot_password
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +15,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
@@ -37,163 +39,187 @@ import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordSta
 import com.spongycode.songquest.ui.theme.DecentBlue
 import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
+import com.spongycode.songquest.util.ComposeLocalWrapper
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
 import kotlinx.coroutines.flow.collectLatest
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ForgotPasswordScreen(
+fun ForgotPasswordScreenRoot(
     viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
-    val email = viewModel.email.value
-    val otp = viewModel.otp.value
-    val password = viewModel.password.value
-    val forgotPasswordState = viewModel.forgotPasswordState.value
-    val changePasswordState = viewModel.changePasswordState.value
-    val isPasswordVisible = viewModel.isPasswordVisible.value
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
     val snackBarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(key1 = keyboardController) {
-        viewModel.snackBarFlow.collectLatest { event ->
-            if (event.show) {
-                keyboardController?.hide()
-                snackBarHostState.showSnackbar(
-                    message = event.text,
-                    actionLabel = "Okay",
-                    duration = SnackbarDuration.Short
-                )
+    LaunchedEffect(null) {
+        viewModel.viewEffect.collectLatest {
+            when (it) {
+                is ForgotPasswordViewEffect.ShowSnackBar -> {
+                    snackBarHostState.showSnackbar(
+                        message = it.message,
+                        actionLabel = "Okay",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+
+                is ForgotPasswordViewEffect.Navigate -> {
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(it.route)
+                }
             }
         }
     }
-
 
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
         }) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        ForgotPasswordScreen(
+            uiState = viewModel.uiState.collectAsState().value,
+            onEvent = viewModel::onEvent
+        )
+    }
+}
+
+@Composable
+private fun ForgotPasswordScreen(
+    modifier: Modifier = Modifier,
+    uiState: ForgotPasswordUiState = ForgotPasswordUiState(),
+    onEvent: (ForgotPasswordEvent) -> Unit = {},
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
+
+        TitleText("Reset Password 🔑")
+
+        Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
-
-            TitleText("Reset Password 🔑")
-
-            Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                ) {
 
+                CustomTextField(
+                    text = uiState.email,
+                    labelText = "Email",
+                    placeHolderText = "Email",
+                    shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
+                    singleLine = true,
+                    onValueChange = { onEvent(ForgotPasswordEvent.EnteredEmail(it)) },
+                    enabled = uiState.forgotPasswordState != Success
+                )
+
+
+                if (uiState.forgotPasswordState != Success) {
+                    Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
+                    CustomButton(
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            if (uiState.forgotPasswordState == Success) {
+                                onEvent(ForgotPasswordEvent.Navigate(route = LOGIN_SCREEN))
+                            } else if (uiState.forgotPasswordState == Idle) {
+                                onEvent(ForgotPasswordEvent.SendResetPasswordEmail)
+                            }
+                        },
+                        containerColor = when (uiState.forgotPasswordState) {
+                            Checking -> Color.DarkGray
+                            Idle -> DecentBlue
+                            Error -> DecentRed
+                            Success -> DecentGreen
+                        },
+                        contentColor = Color.Black,
+                        displayText = when (uiState.forgotPasswordState) {
+                            Checking -> "Sending..."
+                            Idle -> "Send OTP"
+                            Error -> stringResource(R.string.registration_error)
+                            Success -> "Check mail 🚀"
+                        }
+                    )
+                } else {
+                    Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
                     CustomTextField(
-                        text = email,
-                        labelText = "Email",
-                        placeHolderText = "Email",
+                        text = uiState.otp,
+                        labelText = "OTP",
+                        placeHolderText = "Enter OTP",
                         shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
                         singleLine = true,
-                        onValueChange = { viewModel.onEvent(ForgotPasswordEvent.EnteredEmail(it)) },
-                        enabled = viewModel.forgotPasswordState.value != Success
+                        onValueChange = {
+                            onEvent(
+                                ForgotPasswordEvent.EnteredOTP(
+                                    it
+                                )
+                            )
+                        },
+                        keyboardType = KeyboardType.Number
                     )
 
-
-                    if (forgotPasswordState != Success) {
-                        Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
-                        CustomButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                                if (forgotPasswordState == Success) {
-                                    navController.navigate("login")
-                                } else if (forgotPasswordState == Idle) {
-                                    viewModel.onEvent(ForgotPasswordEvent.SendResetPasswordEmail)
-                                }
-                            },
-                            containerColor = when (forgotPasswordState) {
-                                Checking -> Color.DarkGray
-                                Idle -> DecentBlue
-                                Error -> DecentRed
-                                Success -> DecentGreen
-                            },
-                            contentColor = Color.Black,
-                            displayText = when (forgotPasswordState) {
-                                Checking -> "Sending..."
-                                Idle -> "Send OTP"
-                                Error -> stringResource(R.string.registration_error)
-                                Success -> "Check mail 🚀"
-                            }
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
-                        CustomTextField(
-                            text = otp,
-                            labelText = "OTP",
-                            placeHolderText = "Enter OTP",
-                            shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                            singleLine = true,
-                            onValueChange = {
-                                viewModel.onEvent(
-                                    ForgotPasswordEvent.EnteredOTP(
-                                        it
-                                    )
+                    CustomTextField(
+                        text = uiState.password,
+                        labelText = "New Password",
+                        placeHolderText = "New password",
+                        shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
+                        singleLine = true,
+                        isPasswordVisible = uiState.isPasswordVisible,
+                        keyboardType = KeyboardType.Password,
+                        onValueChange = {
+                            onEvent(
+                                ForgotPasswordEvent.EnteredPassword(
+                                    it
                                 )
-                            },
-                            keyboardType = KeyboardType.Number
-                        )
-
-                        CustomTextField(
-                            text = password,
-                            labelText = "New Password",
-                            placeHolderText = "New password",
-                            shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                            singleLine = true,
-                            isPasswordVisible = isPasswordVisible,
-                            keyboardType = KeyboardType.Password,
-                            onValueChange = {
-                                viewModel.onEvent(
-                                    ForgotPasswordEvent.EnteredPassword(
-                                        it
-                                    )
-                                )
-                            },
-                            onPasswordToggleClick = { viewModel.onEvent(ForgotPasswordEvent.TogglePasswordVisibility) }
-                        )
-                        Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
-                        CustomButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                                if (changePasswordState == Success) {
-                                    navController.navigateUp()
-                                } else if (changePasswordState == Idle) {
-                                    viewModel.onEvent(ForgotPasswordEvent.SendChangePassword)
-                                }
-                            },
-                            containerColor = when (changePasswordState) {
-                                Checking -> Color.DarkGray
-                                Idle -> DecentBlue
-                                Error -> DecentRed
-                                Success -> DecentGreen
-                            },
-                            contentColor = Color.Black,
-                            displayText = when (changePasswordState) {
-                                Checking -> "Updating password.."
-                                Idle -> "Update Password"
-                                Error -> stringResource(R.string.registration_error)
-                                Success -> "Success, Proceed to Login 🚀"
+                            )
+                        },
+                        onPasswordToggleClick = { onEvent(ForgotPasswordEvent.TogglePasswordVisibility) }
+                    )
+                    Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
+                    CustomButton(
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            if (uiState.changePasswordState == Success) {
+                                onEvent(ForgotPasswordEvent.Navigate(route = LOGIN_SCREEN))
+                            } else if (uiState.changePasswordState == Idle) {
+                                onEvent(ForgotPasswordEvent.SendChangePassword)
                             }
-                        )
-                    }
+                        },
+                        containerColor = when (uiState.changePasswordState) {
+                            Checking -> Color.DarkGray
+                            Idle -> DecentBlue
+                            Error -> DecentRed
+                            Success -> DecentGreen
+                        },
+                        contentColor = Color.Black,
+                        displayText = when (uiState.changePasswordState) {
+                            Checking -> "Updating password.."
+                            Idle -> "Update Password"
+                            Error -> stringResource(R.string.registration_error)
+                            Success -> "Success, Proceed to Login 🚀"
+                        }
+                    )
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewForgotPasswordScreen() {
+    ComposeLocalWrapper {
+        ForgotPasswordScreen()
     }
 }

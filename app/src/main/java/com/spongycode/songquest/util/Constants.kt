@@ -43,7 +43,14 @@ object Constants {
     // screen route names
     const val SPLASH_SCREEN = "splash"
     const val REGISTER_SCREEN = "register"
-    const val LOGIN_SCREEN = "register"
+    const val LOGIN_SCREEN = "login"
     const val HOME_SCREEN = "home"
     const val FORGOT_PASSWORD_SCREEN = "forgot_password"
+    const val LEADERBOARD_SCREEN = "leaderboard"
+    const val PLAYING_SCREEN = "playing"
+    const val PROFILE_SCREEN = "profile"
+    const val HISTORY_SCREEN = "history"
+    const val GAME_OVER_SCREEN = "game_over"
+    const val CATEGORY = "category"
+    const val GAME_ID = "game_id"
 }

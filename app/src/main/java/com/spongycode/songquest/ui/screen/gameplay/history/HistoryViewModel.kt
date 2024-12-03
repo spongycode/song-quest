@@ -1,9 +1,5 @@
 package com.spongycode.songquest.ui.screen.gameplay.history
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.model.auth.AuthModel
@@ -12,6 +8,8 @@ import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,15 +19,13 @@ class HistoryViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
 
-    private val _historyState = mutableStateOf<HistoryState>(HistoryState.Loading)
-    val historyState: State<HistoryState> = _historyState
+    private val _uiState = MutableStateFlow(HistoryUiState())
+    val uiState = _uiState.asStateFlow()
 
-
-    private val _games = mutableStateListOf<GameModel>()
-    val games: SnapshotStateList<GameModel> = _games
-
-    init {
-        fetchHistoryGames()
+    fun onEvent(event: HistoryEvent) {
+        when (event) {
+            HistoryEvent.FetchHistoryGames -> fetchHistoryGames()
+        }
     }
 
     private fun fetchHistoryGames() {
@@ -41,15 +37,29 @@ class HistoryViewModel @Inject constructor(
                     AuthModel(accessToken = accessToken)
                 )
                 if (res?.status == "success") {
-                    _games.clear()
-                    _games.addAll(res.data?.games!!)
-                    _historyState.value = HistoryState.Success
+                    _uiState.value = _uiState.value.copy(
+                        games = res.data?.games!!,
+                        historyState = HistoryState.Success
+                    )
                 } else {
-                    _historyState.value = HistoryState.Error
+                    _uiState.value = _uiState.value.copy(
+                        historyState = HistoryState.Error
+                    )
                 }
             } catch (err: Exception) {
-                _historyState.value = HistoryState.Error
+                _uiState.value = _uiState.value.copy(
+                    historyState = HistoryState.Error
+                )
             }
         }
     }
 }
+
+sealed interface HistoryEvent {
+    data object FetchHistoryGames : HistoryEvent
+}
+
+data class HistoryUiState(
+    val games: List<GameModel> = emptyList(),
+    val historyState: HistoryState = HistoryState.Loading
+)

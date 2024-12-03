@@ -36,8 +36,6 @@ import com.spongycode.songquest.ui.screen.auth.components.TitleText
 import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.EnteredEmail
 import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.EnteredPassword
 import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.EnteredUsername
-import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.NavigateToHome
-import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.NavigateToLogin
 import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.Register
 import com.spongycode.songquest.ui.screen.auth.register.RegisterEvent.TogglePasswordVisibility
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Checking
@@ -49,6 +47,8 @@ import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.util.ComposeLocalWrapper
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.HOME_SCREEN
+import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -162,7 +162,7 @@ fun RegisterScreen(
                         keyboardController?.hide()
                         focusManager.clearFocus()
                         if (uiState.registerState == Success) {
-                            onEvent(NavigateToHome)
+                            onEvent(RegisterEvent.Navigate(route = HOME_SCREEN))
                         } else if (uiState.registerState == Idle) {
                             onEvent(Register)
                         }
@@ -192,7 +192,7 @@ fun RegisterScreen(
             tag = "login",
             str2 = "Login here",
             onClick = {
-                onEvent(NavigateToLogin)
+                onEvent(RegisterEvent.Navigate(route = LOGIN_SCREEN))
             }
         )
     }

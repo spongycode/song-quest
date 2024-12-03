@@ -2,20 +2,18 @@ package com.spongycode.songquest.ui.screen.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spongycode.songquest.domain.repository.AuthRepository
-import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Checking
-import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Error
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.emailSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.gamesPlayedSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.refreshTokenSession
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.usernameSession
+import com.spongycode.songquest.domain.repository.AuthRepository
+import com.spongycode.songquest.domain.repository.DatastoreRepository
+import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Checking
+import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Error
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Idle
 import com.spongycode.songquest.ui.screen.auth.register.RegisterState.Success
 import com.spongycode.songquest.ui.screen.auth.register.RegisterViewEffect.ShowSnackBar
-import com.spongycode.songquest.util.Constants.HOME_SCREEN
-import com.spongycode.songquest.util.Constants.LOGIN_SCREEN
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -69,15 +67,14 @@ class RegisterViewModel @Inject constructor(
             }
 
             is RegisterEvent.Register -> registerUser()
-            RegisterEvent.NavigateToHome -> {
+            is RegisterEvent.Navigate -> {
                 viewModelScope.launch {
-                    _viewEffect.emit(RegisterViewEffect.Navigate(route = HOME_SCREEN))
-                }
-            }
-
-            RegisterEvent.NavigateToLogin -> {
-                viewModelScope.launch {
-                    _viewEffect.emit(RegisterViewEffect.Navigate(route = LOGIN_SCREEN))
+                    _viewEffect.emit(
+                        RegisterViewEffect.Navigate(
+                            route = event.route,
+                            popBackStack = event.popBackStack
+                        )
+                    )
                 }
             }
         }

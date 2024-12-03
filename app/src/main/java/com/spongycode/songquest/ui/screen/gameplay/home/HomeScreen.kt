@@ -14,9 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,34 +30,65 @@ import com.spongycode.songquest.ui.screen.gameplay.home.components.Header
 import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.ui.theme.OptionLightGreen
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.HISTORY_SCREEN
+import com.spongycode.songquest.util.Constants.LEADERBOARD_SCREEN
+import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
+import com.spongycode.songquest.util.Constants.PROFILE_SCREEN
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
 import com.spongycode.songquest.util.Fonts
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun HomeScreen(
+fun HomeScreenRoot(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
-    val username = viewModel.username.value
-    LaunchedEffect(Unit) {
-        viewModel.getData()
+    LaunchedEffect(null) {
+        viewModel.viewEffect.collectLatest {
+            when (it) {
+                is HomeViewEffect.Navigate -> {
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(it.route)
+                }
+            }
+        }
+    }
+    HomeScreen(
+        uiState = viewModel.uiState.collectAsState().value,
+        onEvent = viewModel::onEvent
+    )
+}
+
+@Composable
+private fun HomeScreen(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState = HomeUiState(),
+    onEvent: (HomeEvent) -> Unit = {},
+) {
+    LaunchedEffect(null) {
+        onEvent(HomeEvent.GetData)
     }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 15.dp)
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        Header({ navController.navigate("profile") }, username)
+        Header(
+            { onEvent(HomeEvent.Navigate(route = PROFILE_SCREEN, popBackStack = false)) },
+            uiState.username
+        )
 
         CardInfo(
-            "Games played: ${viewModel.gamesPlayed.intValue}",
+            "Games played: ${uiState.gamesPlayed}",
             trailingIcon = R.drawable.gameplay_count,
             bgColor = OptionLightBlue,
-            onClick = { navController.navigate("history") }
+            onClick = { onEvent(HomeEvent.Navigate(route = HISTORY_SCREEN, popBackStack = false)) }
         )
 
         Text(
@@ -73,12 +106,26 @@ fun HomeScreen(
                 ) {
                     CategorySelector(
                         Constants.BOLLYWOOD_DISPLAY_TEXT,
-                        { navController.navigate("playing/${Constants.BOLLYWOOD_CODE}") },
+                        {
+                            onEvent(
+                                HomeEvent.Navigate(
+                                    route = "$PLAYING_SCREEN/${Constants.BOLLYWOOD_CODE}",
+                                    popBackStack = false
+                                )
+                            )
+                        },
                         R.drawable.bollywood_banner
                     )
                     CategorySelector(
                         Constants.HOLLYWOOD_DISPLAY_TEXT,
-                        { navController.navigate("playing/${Constants.HOLLYWOOD_CODE}") },
+                        {
+                            onEvent(
+                                HomeEvent.Navigate(
+                                    route = "$PLAYING_SCREEN/${Constants.HOLLYWOOD_CODE}",
+                                    popBackStack = false
+                                )
+                            )
+                        },
                         R.drawable.hollywood_banner
                     )
                 }
@@ -91,12 +138,26 @@ fun HomeScreen(
                 ) {
                     CategorySelector(
                         Constants.DESI_HIP_HOP_DISPLAY_TEXT,
-                        { navController.navigate("playing/${Constants.DESI_HIP_HOP_CODE}") },
+                        {
+                            onEvent(
+                                HomeEvent.Navigate(
+                                    route = "$PLAYING_SCREEN/${Constants.DESI_HIP_HOP_CODE}",
+                                    popBackStack = false
+                                )
+                            )
+                        },
                         R.drawable.desi_hip_hop_banner
                     )
                     CategorySelector(
                         Constants.HIP_HOP_DISPLAY_TEXT,
-                        { navController.navigate("playing/${Constants.HIP_HOP_CODE}") },
+                        {
+                            onEvent(
+                                HomeEvent.Navigate(
+                                    route = "$PLAYING_SCREEN/${Constants.HIP_HOP_CODE}",
+                                    popBackStack = false
+                                )
+                            )
+                        },
                         R.drawable.hip_hop_banner
                     )
                 }
@@ -107,7 +168,22 @@ fun HomeScreen(
             "Leaderboard",
             trailingIcon = R.drawable.leader_board_icon,
             bgColor = OptionLightGreen,
-            onClick = { navController.navigate("leaderboard") }
+            onClick = {
+                onEvent(
+                    HomeEvent.Navigate(
+                        route = LEADERBOARD_SCREEN,
+                        popBackStack = false
+                    )
+                )
+            }
         )
     }
+}
+
+@Preview
+@Composable
+private fun PreviewHomeScreen() {
+    HomeScreen(
+        uiState = HomeUiState(username = "dummy_user")
+    )
 }

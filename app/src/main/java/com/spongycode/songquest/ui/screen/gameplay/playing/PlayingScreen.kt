@@ -15,6 +15,7 @@ import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenPlaceholder
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenSuccess
+import com.spongycode.songquest.util.Constants.GAME_OVER_SCREEN
 
 @Composable
 fun PlayingScreen(
@@ -31,7 +32,7 @@ fun PlayingScreen(
 
     if (isGameOver) {
         navController.popBackStack()
-        navController.navigate("gameover/${viewModel.game.value._id}")
+        navController.navigate("$GAME_OVER_SCREEN/${viewModel.game.value._id}")
     }
 
     if (viewModel.time.intValue == 0) {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,7 +54,7 @@ fun GameOverDisplayCard(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             Box(
                 modifier = Modifier.background(Color.Red),

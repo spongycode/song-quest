@@ -10,6 +10,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,21 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardViewModel
 import com.spongycode.songquest.util.CategoryConvertor
 import com.spongycode.songquest.util.Fonts
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDropDownMenu(
-    viewModel: LeaderboardViewModel = hiltViewModel(),
+    selectedCategory: String = "",
+    onChangeCategory: (String) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     val categories = CategoryConvertor.giveAllCategories()
@@ -55,7 +56,7 @@ fun CustomDropDownMenu(
 
             OutlinedTextField(
                 readOnly = true,
-                value = CategoryConvertor.codeToDisplayText(viewModel.selectedCategory.value),
+                value = CategoryConvertor.codeToDisplayText(selectedCategory),
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 textStyle = TextStyle(
@@ -64,14 +65,14 @@ fun CustomDropDownMenu(
                     fontSize = 18.sp
                 ),
                 modifier = Modifier
-                    .menuAnchor()
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                     .width(width.dp)
             )
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.background)
                     .exposedDropdownSize()
                     .padding(horizontal = 10.dp)
             ) {
@@ -86,7 +87,7 @@ fun CustomDropDownMenu(
                             )
                         },
                         onClick = {
-                            viewModel.changeSelectedCategory(item)
+                            onChangeCategory(item)
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -97,4 +98,8 @@ fun CustomDropDownMenu(
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+private fun PreviewCustomDropDownMenu() {
+    CustomDropDownMenu()
+}

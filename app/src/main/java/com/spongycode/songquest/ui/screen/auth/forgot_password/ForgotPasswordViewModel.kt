@@ -152,3 +152,20 @@ sealed interface ForgotPasswordViewEffect {
     data class Navigate(val route: String, val popBackStack: Boolean = true) :
         ForgotPasswordViewEffect
 }
+
+sealed interface ForgotPasswordEvent {
+    data class EnteredEmail(val value: String) : ForgotPasswordEvent
+    data class EnteredPassword(val value: String) : ForgotPasswordEvent
+    data class EnteredOTP(val value: String) : ForgotPasswordEvent
+    data class Navigate(val route: String, val popBackStack: Boolean = true) : ForgotPasswordEvent
+    data object TogglePasswordVisibility : ForgotPasswordEvent
+    data object SendResetPasswordEmail : ForgotPasswordEvent
+    data object SendChangePassword : ForgotPasswordEvent
+}
+
+sealed interface ForgotPasswordState {
+    data object Idle : ForgotPasswordState
+    data object Checking : ForgotPasswordState
+    data object Success : ForgotPasswordState
+    data object Error : ForgotPasswordState
+}

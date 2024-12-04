@@ -16,14 +16,15 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
@@ -36,27 +37,38 @@ import com.spongycode.songquest.ui.theme.DecentGreen
 import com.spongycode.songquest.ui.theme.DecentRed
 import com.spongycode.songquest.ui.theme.OptionDarkRed
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+fun ProfileScreenRoot(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val navController = LocalNavController.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
-    val profileState = viewModel.profileState.value
     val snackBarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(key1 = keyboardController) {
-        viewModel.snackBarFlow.collectLatest { event ->
-            if (event.show) {
-                keyboardController?.hide()
-                snackBarHostState.showSnackbar(
-                    message = event.text,
-                    actionLabel = "Okay",
-                    duration = SnackbarDuration.Short
-                )
+    LaunchedEffect(null) {
+        viewModel.viewEffect.collectLatest {
+            when (it) {
+                is ProfileViewEffect.Navigate -> {
+                    if (it.navigateUp) {
+                        navController.navigateUp()
+                    }
+                    if (it.popBackStack) {
+                        navController.popBackStack()
+                    }
+                    it.route?.let { route ->
+                        navController.navigate(route)
+                    }
+                }
+
+                is ProfileViewEffect.ShowSnackBar -> {
+                    snackBarHostState.showSnackbar(
+                        message = it.message,
+                        actionLabel = "Okay",
+                        duration = SnackbarDuration.Short
+                    )
+                }
             }
         }
     }
@@ -65,76 +77,104 @@ fun ProfileScreen(
     }, snackbarHost = {
         SnackbarHost(hostState = snackBarHostState)
     }) {
-        Column(
-            Modifier
-                .padding(top = it.calculateTopPadding())
-                .fillMaxSize()
-                .padding(horizontal = 50.dp)
-                .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        ProfileScreen(
+            modifier = Modifier
+                .padding(top = it.calculateTopPadding()),
+            uiState = viewModel.uiState.collectAsState().value,
+            onEvent = viewModel::onEvent
+        )
+    }
+}
 
-            Column {
-                CustomTextField(
-                    text = viewModel.email.value,
-                    labelText = "Email",
-                    placeHolderText = "Email",
-                    shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                    singleLine = true,
-                    onValueChange = { },
-                    enabled = false
-                )
 
-                Spacer(modifier = Modifier.height(Constants.SMALL_HEIGHT))
-                CustomTextField(
-                    text = viewModel.username.value,
-                    labelText = "Username",
-                    placeHolderText = "Username",
-                    shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
-                    singleLine = true,
-                    onValueChange = { text -> viewModel.onEvent(ProfileEvent.EnteredUsername(value = text)) },
-                )
+@Composable
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    uiState: ProfileUiState = ProfileUiState(),
+    onEvent: (ProfileEvent) -> Unit = {}
+) {
+    LaunchedEffect(null) {
+        onEvent(ProfileEvent.GetPersonalDetails)
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 50.dp),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column {
+            CustomTextField(
+                text = uiState.email,
+                labelText = "Email",
+                placeHolderText = "Email",
+                shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
+                singleLine = true,
+                onValueChange = { },
+                enabled = false
+            )
 
-                Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
+            Spacer(modifier = Modifier.height(Constants.SMALL_HEIGHT))
+            CustomTextField(
+                text = uiState.username,
+                labelText = "Username",
+                placeHolderText = "Username",
+                shape = RoundedCornerShape(Constants.CORNER_RADIUS_PERCENTAGE),
+                singleLine = true,
+                onValueChange = { text -> onEvent(ProfileEvent.EnteredUsername(value = text)) },
+            )
 
-                CustomButton(
-                    onClick = {
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
-                        if (profileState == ProfileState.Success) {
-                            navController.navigateUp()
-                        } else if (profileState == ProfileState.Idle) {
-                            viewModel.onEvent(ProfileEvent.SendUpdateProfile)
-                        }
-                    },
-                    containerColor = when (profileState) {
-                        ProfileState.Checking -> Color.DarkGray
-                        ProfileState.Idle -> DecentBlue
-                        ProfileState.Error -> DecentRed
-                        ProfileState.Success -> DecentGreen
-                    },
-                    contentColor = Color.Black,
-                    displayText = when (profileState) {
-                        ProfileState.Checking -> "Updating profile.."
-                        ProfileState.Idle -> "Update Profile"
-                        ProfileState.Error -> stringResource(R.string.registration_error)
-                        ProfileState.Success -> "Success, Proceed to Home"
-                    }
-                )
-            }
+            Spacer(modifier = Modifier.height(Constants.LARGE_HEIGHT))
 
             CustomButton(
                 onClick = {
-                    navController.navigateUp()
-                    navController.popBackStack()
-                    navController.navigate("register")
-                    viewModel.onEvent(ProfileEvent.Logout)
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    if (uiState.profileState == ProfileState.Success) {
+                        onEvent(ProfileEvent.Navigate(navigateUp = true, popBackStack = false))
+                    } else if (uiState.profileState == ProfileState.Idle) {
+                        onEvent(ProfileEvent.SendUpdateProfile)
+                    }
                 },
-                containerColor = OptionDarkRed,
-                contentColor = Color.White,
-                displayText = "Log out"
+                containerColor = when (uiState.profileState) {
+                    ProfileState.Checking -> Color.DarkGray
+                    ProfileState.Idle -> DecentBlue
+                    ProfileState.Error -> DecentRed
+                    ProfileState.Success -> DecentGreen
+                },
+                contentColor = Color.Black,
+                displayText = when (uiState.profileState) {
+                    ProfileState.Checking -> "Updating profile.."
+                    ProfileState.Idle -> "Update Profile"
+                    ProfileState.Error -> stringResource(R.string.registration_error)
+                    ProfileState.Success -> "Success, Proceed to Home"
+                }
             )
         }
+
+        CustomButton(
+            onClick = {
+                onEvent(
+                    ProfileEvent.Navigate(
+                        route = REGISTER_SCREEN,
+                        navigateUp = true,
+                        popBackStack = true
+                    )
+                )
+                onEvent(ProfileEvent.Logout)
+            },
+            containerColor = OptionDarkRed,
+            contentColor = Color.White,
+            displayText = "Log out"
+        )
     }
+}
+
+@Preview
+@Composable
+private fun PreviewProfileScreen() {
+    ProfileScreen()
 }

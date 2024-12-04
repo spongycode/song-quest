@@ -115,3 +115,9 @@ sealed interface GameOverViewEffect {
         val popBackStack: Boolean
     ) : GameOverViewEffect
 }
+
+sealed interface GameOverState {
+    data object Loading : GameOverState
+    data object Success : GameOverState
+    data object Error : GameOverState
+}

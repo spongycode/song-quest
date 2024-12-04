@@ -63,3 +63,9 @@ data class HistoryUiState(
     val games: List<GameModel> = emptyList(),
     val historyState: HistoryState = HistoryState.Loading
 )
+
+sealed interface HistoryState {
+    data object Loading : HistoryState
+    data object Success : HistoryState
+    data object Error : HistoryState
+}

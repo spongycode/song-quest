@@ -1,18 +1,18 @@
 package com.spongycode.songquest.ui.screen.gameplay.profile
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.ui.screen.ui_events.SnackBarEvent
 import com.spongycode.songquest.util.ValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,31 +21,38 @@ class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _username = mutableStateOf("username")
-    val username: State<String> = _username
-
-    private val _email = mutableStateOf("email")
-    val email: State<String> = _email
-
-    private val _profileState = mutableStateOf<ProfileState>(ProfileState.Idle)
-    val profileState: State<ProfileState> = _profileState
-
-    private val _snackBarFlow = MutableSharedFlow<SnackBarEvent>()
-    val snackBarFlow = _snackBarFlow.asSharedFlow()
-
-    init {
-        populatePersonalDetails()
-    }
+    private val _viewEffect = MutableSharedFlow<ProfileViewEffect>()
+    val viewEffect: SharedFlow<ProfileViewEffect> = _viewEffect.asSharedFlow()
 
     fun onEvent(event: ProfileEvent) {
-        if (_profileState.value != ProfileState.Success) {
-            _profileState.value = ProfileState.Idle
+        if (_uiState.value.profileState != ProfileState.Success) {
+            _uiState.value = _uiState.value.copy(
+                profileState = ProfileState.Idle
+            )
         }
         when (event) {
-            is ProfileEvent.EnteredUsername -> _username.value = event.value
+            is ProfileEvent.EnteredUsername -> _uiState.value = _uiState.value.copy(
+                username = event.value
+            )
+
             is ProfileEvent.SendUpdateProfile -> updateProfile()
             is ProfileEvent.Logout -> logout()
+            is ProfileEvent.Navigate -> {
+                viewModelScope.launch {
+                    _viewEffect.emit(
+                        ProfileViewEffect.Navigate(
+                            route = event.route,
+                            navigateUp = event.navigateUp,
+                            popBackStack = event.popBackStack
+                        )
+                    )
+                }
+            }
+
+            ProfileEvent.GetPersonalDetails -> getPersonalDetails()
         }
     }
 
@@ -57,53 +64,87 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun updateProfile() {
-        val validationError = ValidationHelper.validateUsername(_username.value)
+        val validationError = ValidationHelper.validateUsername(_uiState.value.username)
 
         viewModelScope.launch {
             if (validationError != null) {
-                _snackBarFlow.emit(
-                    SnackBarEvent(
-                        show = true,
-                        text = validationError
-                    )
-                )
+                _viewEffect.emit(ProfileViewEffect.ShowSnackBar(message = validationError))
                 return@launch
             }
-            _profileState.value = ProfileState.Checking
+            _uiState.value = _uiState.value.copy(
+                profileState = ProfileState.Checking
+            )
             try {
                 val accessToken =
                     datastoreRepository.getString(DatastoreRepositoryImpl.accessTokenSession)
 
                 val res = authRepository.updateProfile(
-                    UserModel(accessToken = accessToken, username = _username.value)
+                    UserModel(accessToken = accessToken, username = _uiState.value.username)
                 )
                 if (res?.status == "success") {
                     datastoreRepository.storeString(
                         key = DatastoreRepositoryImpl.usernameSession,
                         value = res.data?.user?.username.toString()
                     )
-                    _profileState.value = ProfileState.Success
-                } else {
-                    _snackBarFlow.emit(
-                        SnackBarEvent(
-                            show = true,
-                            text = res?.message.toString()
-                        )
+                    _uiState.value = _uiState.value.copy(
+                        profileState = ProfileState.Success
                     )
-                    _profileState.value = ProfileState.Error
+                } else {
+                    _viewEffect.emit(ProfileViewEffect.ShowSnackBar(message = res?.message.toString()))
+                    _uiState.value = _uiState.value.copy(
+                        profileState = ProfileState.Error
+                    )
                 }
             } catch (_: Exception) {
-                _profileState.value = ProfileState.Error
+                _uiState.value = _uiState.value.copy(
+                    profileState = ProfileState.Error
+                )
             }
         }
     }
 
-    private fun populatePersonalDetails() {
+    private fun getPersonalDetails() {
         viewModelScope.launch {
-            _username.value =
-                datastoreRepository.getString(DatastoreRepositoryImpl.usernameSession).toString()
-            _email.value =
-                datastoreRepository.getString(DatastoreRepositoryImpl.emailSession).toString()
+            _uiState.value = _uiState.value.copy(
+                username = datastoreRepository.getString(DatastoreRepositoryImpl.usernameSession)
+                    .toString(),
+                email = datastoreRepository.getString(DatastoreRepositoryImpl.emailSession)
+                    .toString()
+            )
         }
     }
+}
+
+data class ProfileUiState(
+    val username: String = "username",
+    val email: String = "email",
+    val profileState: ProfileState = ProfileState.Idle
+)
+
+sealed interface ProfileEvent {
+    data class EnteredUsername(val value: String) : ProfileEvent
+    data object SendUpdateProfile : ProfileEvent
+    data object Logout : ProfileEvent
+    data object GetPersonalDetails : ProfileEvent
+    data class Navigate(
+        val route: String? = null,
+        val navigateUp: Boolean = false,
+        val popBackStack: Boolean = true
+    ) : ProfileEvent
+}
+
+sealed interface ProfileViewEffect {
+    data class ShowSnackBar(val message: String) : ProfileViewEffect
+    data class Navigate(
+        val route: String?,
+        val navigateUp: Boolean,
+        val popBackStack: Boolean
+    ) : ProfileViewEffect
+}
+
+sealed interface ProfileState {
+    data object Idle : ProfileState
+    data object Checking : ProfileState
+    data object Success : ProfileState
+    data object Error : ProfileState
 }

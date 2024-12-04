@@ -135,3 +135,18 @@ sealed interface LoginViewEffect {
     data class ShowSnackBar(val message: String) : LoginViewEffect
     data class Navigate(val route: String, val popBackStack: Boolean = true) : LoginViewEffect
 }
+
+sealed interface LoginEvent {
+    data class EnteredEmailOrUsername(val value: String) : LoginEvent
+    data class EnteredPassword(val value: String) : LoginEvent
+    data class Navigate(val route: String, val popBackStack: Boolean = true) : LoginEvent
+    data object TogglePasswordVisibility : LoginEvent
+    data object Login : LoginEvent
+}
+
+sealed interface LoginState {
+    data object Idle : LoginState
+    data object Checking : LoginState
+    data object Success : LoginState
+    data object Error : LoginState
+}

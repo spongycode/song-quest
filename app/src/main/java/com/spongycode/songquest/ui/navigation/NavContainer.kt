@@ -18,9 +18,9 @@ import com.spongycode.songquest.ui.screen.auth.register.RegisterScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.history.HistoryScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.home.HomeScreenRoot
-import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardScreen
+import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingScreen
-import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileScreen
+import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileScreenRoot
 import com.spongycode.songquest.ui.screen.starter.SplashScreenRoot
 import com.spongycode.songquest.util.Constants.CATEGORY
 import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
@@ -109,7 +109,7 @@ fun NavContainer(startDestination: String) {
                         AnimatedContentTransitionScope.SlideDirection.End, tween(100)
                     )
                 }) {
-                ProfileScreen()
+                ProfileScreenRoot()
             }
             composable(route = HISTORY_SCREEN,
                 enterTransition = {
@@ -141,7 +141,7 @@ fun NavContainer(startDestination: String) {
                         AnimatedContentTransitionScope.SlideDirection.End, tween(100)
                     )
                 }) {
-                LeaderboardScreen()
+                LeaderboardScreenRoot()
             }
         }
     }

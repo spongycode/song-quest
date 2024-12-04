@@ -158,3 +158,19 @@ sealed interface RegisterViewEffect {
     data class ShowSnackBar(val message: String) : RegisterViewEffect
     data class Navigate(val route: String, val popBackStack: Boolean = true) : RegisterViewEffect
 }
+
+sealed interface RegisterEvent {
+    data class EnteredUsername(val value: String) : RegisterEvent
+    data class EnteredEmail(val value: String) : RegisterEvent
+    data class EnteredPassword(val value: String) : RegisterEvent
+    data class Navigate(val route: String, val popBackStack: Boolean = true) : RegisterEvent
+    data object TogglePasswordVisibility : RegisterEvent
+    data object Register : RegisterEvent
+}
+
+sealed interface RegisterState {
+    data object Idle : RegisterState
+    data object Checking : RegisterState
+    data object Success : RegisterState
+    data object Error : RegisterState
+}

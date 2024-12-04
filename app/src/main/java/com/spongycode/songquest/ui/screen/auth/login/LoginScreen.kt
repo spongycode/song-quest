@@ -55,7 +55,6 @@ fun LoginScreenRoot(
 ) {
     val navController = LocalNavController.current
     val snackBarHostState = remember { SnackbarHostState() }
-
     LaunchedEffect(null) {
         viewModel.viewEffect.collectLatest {
             when (it) {

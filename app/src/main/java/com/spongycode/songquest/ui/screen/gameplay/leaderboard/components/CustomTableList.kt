@@ -1,8 +1,5 @@
 package com.spongycode.songquest.ui.screen.gameplay.leaderboard.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,7 +37,6 @@ const val column1Weight = .3f
 const val column2Weight = .3f
 const val column3Weight: Float = .4f
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomTableList(
     listItems: List<LeaderboardUsersModel>,
@@ -57,12 +53,12 @@ fun CustomTableList(
             NormalText(text = "User", weight = column3Weight, title = true)
             NormalText(text = "Accurate", weight = column2Weight, title = true)
         }
-        Divider(
-            color = Color.LightGray,
+        HorizontalDivider(
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            color = Color.LightGray
         )
         LazyColumn {
             itemsIndexed(listItems) { _, item ->
@@ -91,8 +87,6 @@ fun CustomTableList(
                             weight = column3Weight
                         )
                         NormalText(text = item.accurate.toString(), weight = column2Weight)
-
-
                     }
                 }
             }
@@ -101,7 +95,6 @@ fun CustomTableList(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.NormalText(
     text: String,
@@ -122,7 +115,6 @@ fun RowScope.NormalText(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowScope.CategoryDateText(
     username: String,

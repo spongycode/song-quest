@@ -1,7 +1,5 @@
 package com.spongycode.songquest.ui.screen.gameplay.leaderboard
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -23,7 +21,6 @@ import com.spongycode.songquest.ui.screen.gameplay.leaderboard.components.Custom
 import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
 import com.spongycode.songquest.util.ComposeLocalWrapper
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LeaderboardScreenRoot(
@@ -41,7 +38,6 @@ fun LeaderboardScreenRoot(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LeaderboardScreen(
     modifier: Modifier = Modifier,
@@ -72,7 +68,6 @@ fun LeaderboardScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun PreviewLeaderboardScreen() {

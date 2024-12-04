@@ -1,10 +1,12 @@
 package com.spongycode.songquest.ui.screen.gameplay.history
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.data.model.gameplay.GameModel
@@ -23,6 +25,7 @@ fun HistoryScreenRoot(
         Topbar({ navController.navigateUp() }, "Your games")
     }) {
         HistoryScreen(
+            modifier = Modifier.padding(top = it.calculateTopPadding()),
             uiState = viewModel.uiState.collectAsState().value,
             onEvent = viewModel::onEvent
         )
@@ -31,6 +34,7 @@ fun HistoryScreenRoot(
 
 @Composable
 fun HistoryScreen(
+    modifier: Modifier = Modifier,
     uiState: HistoryUiState = HistoryUiState(),
     onEvent: (HistoryEvent) -> Unit = {}
 ) {
@@ -40,7 +44,7 @@ fun HistoryScreen(
     when (uiState.historyState) {
         HistoryState.Error -> PlaceholderMessageText("Oops, some error occurred.")
         HistoryState.Loading -> PlaceholderMessageText("Loading your latest games..")
-        HistoryState.Success -> HistoryList(games = uiState.games)
+        HistoryState.Success -> HistoryList(modifier = modifier, games = uiState.games)
     }
 }
 

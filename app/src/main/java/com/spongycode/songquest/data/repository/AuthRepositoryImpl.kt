@@ -5,6 +5,7 @@ import com.spongycode.songquest.data.model.auth.AuthModel
 import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.util.Constants.BASE_URL
+import com.spongycode.songquest.util.Network.executeWithRetry
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.patch
@@ -23,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String
     ): ApiResponse<AuthModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.post {
                 url("${BASE_URL}api/mobile/users/register")
                 contentType(ContentType.Application.Json)
@@ -36,8 +37,6 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             }
             res.body<ApiResponse<AuthModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 
@@ -45,7 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
         emailOrUsername: String,
         password: String
     ): ApiResponse<AuthModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.post {
                 url("${BASE_URL}api/mobile/users/login")
                 contentType(ContentType.Application.Json)
@@ -58,15 +57,13 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             }
             res.body<ApiResponse<AuthModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 
     override suspend fun forgotPasswordEmail(
         email: String
     ): ApiResponse<UserModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.post {
                 url("${BASE_URL}api/mobile/users/resetpassword")
                 contentType(ContentType.Application.Json)
@@ -77,28 +74,24 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             }
             res.body<ApiResponse<UserModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 
     override suspend fun changePassword(userModel: UserModel): ApiResponse<UserModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.post {
                 url("${BASE_URL}api/mobile/users/password")
                 contentType(ContentType.Application.Json)
                 setBody(userModel)
             }
             res.body<ApiResponse<UserModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 
     override suspend fun refreshToken(
         refreshToken: String
     ): ApiResponse<AuthModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.post {
                 url("${BASE_URL}api/mobile/users/refreshtoken")
                 contentType(ContentType.Application.Json)
@@ -109,21 +102,17 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             }
             res.body<ApiResponse<AuthModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 
     override suspend fun updateProfile(userModel: UserModel): ApiResponse<AuthModel>? {
-        return try {
+        return executeWithRetry {
             val res = client.patch {
                 url("${BASE_URL}api/mobile/users/profile")
                 contentType(ContentType.Application.Json)
                 setBody(userModel)
             }
             res.body<ApiResponse<AuthModel>>()
-        } catch (err: Exception) {
-            null
         }
     }
 }

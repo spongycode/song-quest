@@ -1,7 +1,5 @@
 package com.spongycode.songquest.ui.screen.gameplay.history.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -42,15 +40,15 @@ const val column1Weight = .3f
 const val column2Weight = .3f
 const val column3Weight: Float = .4f
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HistoryList(
+    modifier: Modifier = Modifier,
     games: List<GameModel> = emptyList()
 ) {
     val configuration = LocalConfiguration.current
     val width = (configuration.screenWidthDp - 20) / 2
     Column(
-        Modifier
+        modifier
             .background(MaterialTheme.colorScheme.background)
             .padding(start = 10.dp, end = 10.dp)
     ) {

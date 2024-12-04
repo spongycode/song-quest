@@ -13,21 +13,31 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingViewModel
+import com.spongycode.songquest.data.model.gameplay.QuestionModel
+import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState
 import com.spongycode.songquest.util.Constants
 
 @Composable
 fun PlayingScreenSuccess(
-    viewModel: PlayingViewModel = hiltViewModel()
+    time: Int,
+    currentSongIndex: Int,
+    questions: List<QuestionModel>,
+    totalLife: Int,
+    currentScore: Float,
+    showOptions: Boolean,
+    tappedButtonId: Int,
+    optionTapState: OptionTapState = OptionTapState.Idle,
+    onTapButton: (Int) -> Unit = {},
+    onCheckAnswer: (Int) -> Unit = {},
+    onPlayCurrentSong: () -> Unit
 ) {
     val transitionData = updateCircularTransitionData(
-        remainingTime = viewModel.time.intValue.toLong(),
+        remainingTime = time.toLong(),
         totalTime = Constants.TIME_PER_QUESTION.toLong()
     )
-    if (viewModel.currentSongIndex.intValue < viewModel.questions.size) {
-        LaunchedEffect(viewModel.currentSongIndex.intValue) {
-            viewModel.playCurrentSong()
+    if (currentSongIndex < questions.size) {
+        LaunchedEffect(currentSongIndex) {
+            onPlayCurrentSong()
         }
         Column(
             modifier = Modifier
@@ -44,11 +54,11 @@ fun PlayingScreenSuccess(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                HealthMeter(totalLife = viewModel.totalLife.intValue)
-                ScoreBoard(score = viewModel.currentScore.value)
+                HealthMeter(totalLife = totalLife)
+                ScoreBoard(score = currentScore)
             }
 
-            CircularTimer(transitionData = transitionData, time = viewModel.time.intValue)
+            CircularTimer(transitionData = transitionData, time = time)
 
             Column(
                 modifier = Modifier
@@ -57,12 +67,22 @@ fun PlayingScreenSuccess(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround
             ) {
-                QuestionTitle(viewModel.questions[viewModel.currentSongIndex.intValue].title.toString())
-                if (viewModel.showOptions.value) {
-                    OptionsArea()
+                QuestionTitle(questions[currentSongIndex].title.toString())
+                if (showOptions) {
+                    OptionsArea(
+                        questions = questions,
+                        currentSongIndex = currentSongIndex,
+                        tappedButtonId = tappedButtonId,
+                        optionTapState = optionTapState,
+                        onTapButton = { optionId ->
+                            onTapButton(optionId)
+                        },
+                        onCheckAnswer = { optionId ->
+                            onCheckAnswer(optionId)
+                        }
+                    )
                 }
             }
         }
     }
 }
-

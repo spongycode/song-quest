@@ -1,7 +1,5 @@
 package com.spongycode.songquest.ui.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
@@ -19,7 +17,7 @@ import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.history.HistoryScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.home.HomeScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardScreenRoot
-import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingScreen
+import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingScreenRoot
 import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileScreenRoot
 import com.spongycode.songquest.ui.screen.starter.SplashScreenRoot
 import com.spongycode.songquest.util.Constants.CATEGORY
@@ -37,11 +35,9 @@ import com.spongycode.songquest.util.Constants.SPLASH_SCREEN
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController") }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavContainer(startDestination: String) {
     val navController = rememberNavController()
-
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(navController = navController, startDestination = startDestination) {
             composable(route = SPLASH_SCREEN) {
@@ -89,7 +85,7 @@ fun NavContainer(startDestination: String) {
             }
             composable(route = "$PLAYING_SCREEN/{$CATEGORY}") {
                 val category = it.arguments?.getString(CATEGORY)
-                PlayingScreen(category = category!!)
+                PlayingScreenRoot(category = category!!)
             }
             composable(route = "$GAME_OVER_SCREEN/{$GAME_ID}") {
                 val gameId = it.arguments?.getString(GAME_ID)

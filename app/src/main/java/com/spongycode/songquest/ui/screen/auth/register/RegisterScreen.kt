@@ -97,10 +97,8 @@ fun RegisterScreen(
     uiState: RegisterUiState = RegisterUiState(),
     onEvent: (RegisterEvent) -> Unit = {},
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
     Column(
         modifier = modifier
             .fillMaxSize()

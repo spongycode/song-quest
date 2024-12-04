@@ -10,10 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
+import com.spongycode.songquest.data.model.gameplay.QuestionModel
 import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState
-import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingViewModel
 import com.spongycode.songquest.ui.theme.OptionDarkGreen
 import com.spongycode.songquest.ui.theme.OptionDarkRed
 import com.spongycode.songquest.ui.theme.OptionDarkYellow
@@ -24,40 +23,45 @@ import com.spongycode.songquest.util.Constants
 
 @Composable
 fun OptionsArea(
-    viewModel: PlayingViewModel = hiltViewModel()
+    questions: List<QuestionModel>,
+    currentSongIndex: Int,
+    tappedButtonId: Int,
+    optionTapState: OptionTapState = OptionTapState.Idle,
+    onTapButton: (Int) -> Unit = {},
+    onCheckAnswer: (Int) -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(viewModel.questions[viewModel.currentSongIndex.intValue].options) { option ->
+        items(questions[currentSongIndex].options) { option ->
             OptionField(
                 text = option.value!!,
                 onClick = {
-                    if ((viewModel.optionTapState.value == OptionTapState.Idle)) {
-                        viewModel.tapButton(option.optionid!!)
-                        viewModel.checkAnswer(option.optionid)
+                    if ((optionTapState == OptionTapState.Idle)) {
+                        onTapButton(option.optionid!!)
+                        onCheckAnswer(option.optionid)
                     }
                 },
-                fillColor = if (option.optionid!! != viewModel.tappedButtonId.intValue) Color.White else {
-                    when (viewModel.optionTapState.value) {
+                fillColor = if (option.optionid!! != tappedButtonId) Color.White else {
+                    when (optionTapState) {
                         OptionTapState.Checking -> OptionLightYellow
                         OptionTapState.CorrectAnswer -> OptionLightGreen
                         OptionTapState.Idle -> Color.White
                         OptionTapState.WrongAnswer -> OptionLightRed
                     }
                 },
-                tint = if (option.optionid != viewModel.tappedButtonId.intValue) MaterialTheme.colorScheme.primary else {
-                    when (viewModel.optionTapState.value) {
+                tint = if (option.optionid != tappedButtonId) MaterialTheme.colorScheme.primary else {
+                    when (optionTapState) {
                         OptionTapState.Checking -> OptionDarkYellow
                         OptionTapState.CorrectAnswer -> OptionDarkGreen
                         OptionTapState.Idle -> MaterialTheme.colorScheme.primary
                         OptionTapState.WrongAnswer -> OptionDarkRed
                     }
                 },
-                iconId = if (option.optionid != viewModel.tappedButtonId.intValue) null else {
-                    when (viewModel.optionTapState.value) {
+                iconId = if (option.optionid != tappedButtonId) null else {
+                    when (optionTapState) {
                         OptionTapState.Checking -> null
                         OptionTapState.CorrectAnswer -> R.drawable.baseline_check_circle_24
                         OptionTapState.Idle -> null

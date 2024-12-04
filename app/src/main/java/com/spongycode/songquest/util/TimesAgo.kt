@@ -1,34 +1,41 @@
 package com.spongycode.songquest.util
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 object TimesAgo {
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getTimeAgo(time: String): String {
-        val parts = time.split('Z')
-        val serverTime = LocalDateTime.parse(parts[0])
-        val serverZone = ZoneId.of("UTC")
-        val localZone = ZoneId.systemDefault()
-        val dateTime =
-            serverTime.atZone(serverZone).withZoneSameInstant(localZone).toLocalDateTime()
-        val duration = Duration.between(dateTime, LocalDateTime.now())
+        try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val serverDate = inputFormat.parse(time)
 
-        return when {
-            duration.toDays() > 2 -> {
-                val pattern = "MMM d 'at' HH:mm"
-                val formatter = DateTimeFormatter.ofPattern(pattern)
-                dateTime.format(formatter)
+            val now = Calendar.getInstance()
+            val serverTime = Calendar.getInstance()
+            serverTime.time = serverDate!!
+
+            val diffInMillis = now.timeInMillis - serverTime.timeInMillis
+            val seconds = diffInMillis / 1000
+            val minutes = seconds / 60
+            val hours = minutes / 60
+            val days = hours / 24
+
+            return when {
+                days > 2 -> {
+                    val outputFormat = SimpleDateFormat("MMM d 'at' HH:mm", Locale.getDefault())
+                    outputFormat.timeZone = TimeZone.getDefault()
+                    outputFormat.format(serverDate)
+                }
+
+                days >= 1 -> if (days > 1) "$days days ago" else "yesterday"
+                hours >= 1 -> "$hours hour${if (hours > 1) "s" else ""} ago"
+                minutes >= 1 -> "$minutes min${if (minutes > 1) "s" else ""} ago"
+                else -> "$seconds sec${if (seconds > 1) "s" else ""} ago"
             }
-
-            duration.toDays() >= 1 -> if (duration.toDays() > 1) "${duration.toDays()} days" else "yesterday"
-            duration.toHours() >= 1 -> "${duration.toHours()} hour${if (duration.toHours() > 1) "s" else ""} ago"
-            duration.toMinutes() >= 1 -> "${duration.toMinutes()} min${if (duration.toMinutes() > 1) "s" else ""} ago"
-            else -> "${duration.seconds} sec${if (duration.seconds > 1) "s" else ""} ago"
+        } catch (e: Exception) {
+            return "just now"
         }
     }
 }

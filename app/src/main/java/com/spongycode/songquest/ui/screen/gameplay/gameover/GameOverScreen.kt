@@ -12,9 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,9 +34,13 @@ import com.spongycode.songquest.ui.screen.gameplay.gameover.components.GameOverD
 import com.spongycode.songquest.ui.theme.OptionDarkBlue
 import com.spongycode.songquest.ui.theme.OptionDarkGreen
 import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Constants.BASE_URL
 import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
 import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.Image.saveBitmapAndGetUri
+import com.spongycode.songquest.util.Image.shareImageUriWithText
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun GameOverScreenRoot(
@@ -70,6 +80,10 @@ fun GameOverScreen(
     uiState: GameOverUiState = GameOverUiState(),
     onEvent: (GameOverEvent) -> Unit = {}
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -96,9 +110,35 @@ fun GameOverScreen(
                 GameOverState.Error -> PlaceholderMessageText(text = "Oops, some error occurred.")
                 GameOverState.Loading -> PlaceholderMessageText(text = "Saving your game..")
                 GameOverState.Success -> {
-                    GameOverDisplayCard(uiState.game, uiState.username)
+                    GameOverDisplayCard(
+                        modifier = Modifier
+                            .drawWithContent {
+                                graphicsLayer.record {
+                                    this@drawWithContent.drawContent()
+                                }
+                                drawLayer(graphicsLayer)
+                            },
+                        game = uiState.game,
+                        username = uiState.username
+                    )
 
                     Column {
+                        CustomButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
+                                    val uri = saveBitmapAndGetUri(context, bitmap)
+                                    val message =
+                                        "I scored ${uiState.game.score?.toInt()} in #${uiState.game.category} Quiz! Think you can beat me?\nDownload the app: $BASE_URL"
+                                    shareImageUriWithText(context, uri, message)
+                                }
+                            },
+                            containerColor = OptionDarkGreen,
+                            contentColor = Color.White,
+                            displayText = "SHARE  🚀"
+                        )
+                        Spacer(modifier = Modifier.height(Constants.MEDIUM_HEIGHT))
+
                         CustomButton(
                             onClick = {
                                 onEvent(

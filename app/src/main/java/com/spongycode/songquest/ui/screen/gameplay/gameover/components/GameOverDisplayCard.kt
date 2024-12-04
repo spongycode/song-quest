@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +37,7 @@ import com.spongycode.songquest.util.Fonts
 
 @Composable
 fun GameOverDisplayCard(
+    modifier: Modifier = Modifier,
     game: GameModel,
     username: String
 ) {
@@ -44,14 +46,22 @@ fun GameOverDisplayCard(
     val height = configuration.screenHeightDp / 2
     Box(
         contentAlignment = Alignment.BottomEnd,
-        modifier = Modifier
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
             .width(width.dp)
             .height(height.dp)
-            .padding(5.dp)
+            .padding(25.dp)
     ) {
         Card(
             modifier = Modifier
+                .shadow(
+                    20.dp,
+                    RoundedCornerShape(Constants.SMALL_HEIGHT),
+                    true,
+                    Color.Yellow,
+                    Color.Yellow
+                )
                 .fillMaxSize()
                 .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
                 .background(MaterialTheme.colorScheme.background)

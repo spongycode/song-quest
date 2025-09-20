@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
@@ -43,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreenRoot(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel
 ) {
     val navController = LocalNavController.current
     val snackBarHostState = remember { SnackbarHostState() }

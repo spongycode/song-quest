@@ -8,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.components.PlaceholderMessageText
@@ -18,7 +17,7 @@ import com.spongycode.songquest.ui.screen.gameplay.profile.components.Topbar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreenRoot(
-    viewModel: HistoryViewModel = hiltViewModel()
+    viewModel: HistoryViewModel
 ) {
     val navController = LocalNavController.current
     Scaffold(topBar = {

@@ -17,7 +17,6 @@ import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState.WrongA
 import com.spongycode.songquest.util.Constants.GAME_OVER_SCREEN
 import com.spongycode.songquest.util.Constants.TIME_PER_QUESTION
 import com.spongycode.songquest.util.Constants.TOTAL_CHANCE
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,10 +25,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PlayingViewModel @Inject constructor(
+class PlayingViewModel(
     private val gameplayRepository: GameplayRepository,
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {

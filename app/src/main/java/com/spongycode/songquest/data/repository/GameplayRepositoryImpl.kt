@@ -17,9 +17,8 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import javax.inject.Inject
 
-class GameplayRepositoryImpl @Inject constructor(
+class GameplayRepositoryImpl(
     private val client: HttpClient
 ) : GameplayRepository {
     override suspend fun createGame(createGameModel: CreateGameModel): ApiResponse<PlayingModel>? {

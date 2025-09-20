@@ -31,7 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomAnnotatedString
@@ -51,7 +50,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreenRoot(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel
 ) {
     val navController = LocalNavController.current
     val snackBarHostState = remember { SnackbarHostState() }

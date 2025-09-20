@@ -14,9 +14,8 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import javax.inject.Inject
 
-class AuthRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl(
     private val client: HttpClient
 ) : AuthRepository {
     override suspend fun register(

@@ -7,14 +7,11 @@ import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.domain.repository.GameplayRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HistoryViewModel @Inject constructor(
+class HistoryViewModel(
     private val gameplayRepository: GameplayRepository,
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {

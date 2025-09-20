@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Song Quest"
 include(":app")
+include(":shared")

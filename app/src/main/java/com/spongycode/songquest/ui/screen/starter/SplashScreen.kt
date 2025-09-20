@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.util.Fonts
@@ -33,7 +32,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreenRoot(
-    viewModel: SplashViewModel = hiltViewModel()
+    viewModel: SplashViewModel
 ) {
     val navController = LocalNavController.current
     LaunchedEffect(null) {

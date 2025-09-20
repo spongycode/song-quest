@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.auth.components.CustomButton
@@ -45,7 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameOverScreenRoot(
     gameId: String,
-    viewModel: GameOverViewModel = hiltViewModel()
+    viewModel: GameOverViewModel
 ) {
     val navController = LocalNavController.current
     LaunchedEffect(null) {

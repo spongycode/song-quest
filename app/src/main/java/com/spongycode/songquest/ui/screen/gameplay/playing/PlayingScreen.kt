@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenPlaceholder
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun PlayingScreenRoot(
     category: String,
-    viewModel: PlayingViewModel = hiltViewModel()
+    viewModel: PlayingViewModel
 ) {
     val navController = LocalNavController.current
     LaunchedEffect(null) {

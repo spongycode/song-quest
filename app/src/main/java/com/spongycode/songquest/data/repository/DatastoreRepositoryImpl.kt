@@ -10,9 +10,8 @@ import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.PREFERENCES_NAME
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
-class DatastoreRepositoryImpl @Inject constructor(
+class DatastoreRepositoryImpl(
     private val context: Context
 ) : DatastoreRepository {
 

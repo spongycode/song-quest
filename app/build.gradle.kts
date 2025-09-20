@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
 }
@@ -18,8 +17,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -87,13 +84,6 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
     implementation("io.ktor:ktor-client-logging:3.3.0")
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.57.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.57.1")
-    kapt("androidx.hilt:hilt-compiler:1.3.0")
-    implementation("androidx.hilt:hilt-navigation-fragment:1.3.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 }
 
 kapt {

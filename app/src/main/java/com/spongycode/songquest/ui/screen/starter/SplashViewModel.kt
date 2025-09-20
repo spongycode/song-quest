@@ -11,15 +11,12 @@ import com.spongycode.songquest.domain.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.util.Constants.HOME_SCREEN
 import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SplashViewModel @Inject constructor(
+class SplashViewModel(
     private val authRepository: AuthRepository,
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {

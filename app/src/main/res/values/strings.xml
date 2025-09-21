@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Song Quest</string>
-    <string name="registering">Registering...</string>
-    <string name="register">Register</string>
-    <string name="registration_error">Error 😖</string>
-    <string name="start_playing">Start Playing 🚀</string>
-    <string name="error_fetching_question">Error fetching question</string>
-    <string name="loading_questions">Loading questions..</string>
-</resources>

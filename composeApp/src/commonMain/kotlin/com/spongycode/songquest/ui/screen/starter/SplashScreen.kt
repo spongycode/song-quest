@@ -24,14 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.ui.navigation.LocalNavController
-import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
 import com.spongycode.songquest.util.defaultFontFamily
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import song_quest.composeapp.generated.resources.Res
 import song_quest.composeapp.generated.resources.compose_multiplatform
+import song_quest.composeapp.generated.resources.logo_text
 
 @Composable
 fun SplashScreenRoot(
@@ -76,7 +75,7 @@ fun SplashScreen(
                 modifier = Modifier
                     .height(200.dp)
                     .width(210.dp),
-                painter = painterResource(resource = Res.drawable.compose_multiplatform), contentDescription = null
+                painter = painterResource(resource = Res.drawable.logo_text), contentDescription = null
             )
         }
         Row(

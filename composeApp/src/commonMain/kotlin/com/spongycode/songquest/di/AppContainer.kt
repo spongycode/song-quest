@@ -7,8 +7,12 @@ import com.spongycode.songquest.repository.SettingsRepositoryImpl
 import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordViewModel
 import com.spongycode.songquest.ui.screen.auth.login.LoginViewModel
 import com.spongycode.songquest.ui.screen.auth.register.RegisterViewModel
+import com.spongycode.songquest.ui.screen.gameplay.gameover.GameOverViewModel
+import com.spongycode.songquest.ui.screen.gameplay.history.HistoryViewModel
 import com.spongycode.songquest.ui.screen.gameplay.home.HomeViewModel
+import com.spongycode.songquest.ui.screen.gameplay.leaderboard.LeaderboardViewModel
 import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingViewModel
+import com.spongycode.songquest.ui.screen.gameplay.profile.ProfileViewModel
 import com.spongycode.songquest.ui.screen.starter.SplashViewModel
 import com.spongycode.songquest.util.BasePreferenceManager
 import io.ktor.client.HttpClient
@@ -33,15 +37,15 @@ object AppContainer {
     val forgotPasswordViewModel by lazy { ForgotPasswordViewModel(authRepository) }
     val homeViewModel by lazy { HomeViewModel(settingsRepository) }
     val playingViewModel by lazy { PlayingViewModel(gameplayRepository, settingsRepository) }
-//    val gameOverViewModel by lazy { GameOverViewModel(datastoreRepository, gameplayRepository) }
-//    val profileViewModel by lazy { ProfileViewModel(authRepository, datastoreRepository) }
-//    val historyViewModel by lazy { HistoryViewModel(gameplayRepository, datastoreRepository) }
-//    val leaderboardViewModel by lazy {
-//        LeaderboardViewModel(
-//            datastoreRepository,
-//            gameplayRepository
-//        )
-//    }
+    val gameOverViewModel by lazy { GameOverViewModel(settingsRepository, gameplayRepository) }
+    val profileViewModel by lazy { ProfileViewModel(authRepository, settingsRepository) }
+    val historyViewModel by lazy { HistoryViewModel(gameplayRepository, settingsRepository) }
+    val leaderboardViewModel by lazy {
+        LeaderboardViewModel(
+            settingsRepository,
+            gameplayRepository
+        )
+    }
     private val gameplayRepository by lazy { GameplayRepositoryImpl(client) }
     private val authRepository by lazy { AuthRepositoryImpl(client) }
 

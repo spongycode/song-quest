@@ -74,10 +74,13 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
+            implementation(libs.material.icons.core)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlin.stdlib)
+            implementation(libs.kotlinx.datetime)
+
 
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings)
@@ -93,7 +96,6 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(compose.preview)
-            implementation(libs.androidx.datastore.preferences)
             implementation(project.dependencies.platform(libs.ktor.bom))
             implementation(libs.ktor.client.okhttp)
         }

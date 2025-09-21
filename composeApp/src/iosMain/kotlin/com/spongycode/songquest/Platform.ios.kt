@@ -17,3 +17,15 @@ actual fun getScreenHeight(): Float {
     val bounds = UIScreen.mainScreen.bounds
     return CGRectGetHeight(bounds).toFloat()
 }
+
+actual object PlatformContext {
+    private var appContext: Any? = null
+
+    actual fun setContext(context: Any) {
+        appContext = context
+    }
+
+    actual fun getContext(): Any? {
+        return appContext
+    }
+}

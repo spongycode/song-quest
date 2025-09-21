@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.CategoryConvertor
-import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.Fonts.poppinsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +61,7 @@ fun CustomDropDownMenu(
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 textStyle = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontFamily = Fonts.poppinsFamily,
+                    fontFamily = poppinsFamily(),
                     fontSize = 18.sp
                 ),
                 modifier = Modifier
@@ -82,7 +82,7 @@ fun CustomDropDownMenu(
                         text = {
                             Text(
                                 text = displayText,
-                                fontFamily = Fonts.poppinsFamily,
+                                fontFamily = poppinsFamily(),
                                 fontSize = 15.sp
                             )
                         },

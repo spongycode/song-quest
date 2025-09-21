@@ -14,13 +14,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.spongycode.songquest.R
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.Fonts.poppinsFamily
+import song_quest.composeapp.generated.resources.Res
+import song_quest.composeapp.generated.resources.bollywood_banner
+import song_quest.composeapp.generated.resources.desi_hip_hop_banner
+import song_quest.composeapp.generated.resources.hip_hop_banner
+import song_quest.composeapp.generated.resources.hollywood_banner
 
 @Composable
 fun PlayingScreenPlaceholder(
@@ -40,28 +44,28 @@ fun PlayingScreenPlaceholder(
             fontSize = 25.sp,
             color = MaterialTheme.colorScheme.background,
             fontWeight = FontWeight.W600,
-            fontFamily = Fonts.poppinsFamily
+            fontFamily = poppinsFamily()
         )
         Image(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Red),
             painter = painterResource(
-                id = when (category) {
+                resource = when (category) {
                     Constants.BOLLYWOOD_CODE -> {
-                        R.drawable.bollywood_banner
+                        Res.drawable.bollywood_banner
                     }
 
                     Constants.HOLLYWOOD_CODE -> {
-                        R.drawable.hollywood_banner
+                        Res.drawable.hollywood_banner
                     }
 
                     Constants.DESI_HIP_HOP_CODE -> {
-                        R.drawable.desi_hip_hop_banner
+                        Res.drawable.desi_hip_hop_banner
                     }
 
                     else -> {
-                        R.drawable.hip_hop_banner
+                        Res.drawable.hip_hop_banner
                     }
                 }
             ), contentDescription = null,

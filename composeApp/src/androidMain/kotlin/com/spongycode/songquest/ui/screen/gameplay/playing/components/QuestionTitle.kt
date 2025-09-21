@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts
+import com.spongycode.songquest.util.Fonts.poppinsFamily
 
 @Preview
 @Composable
@@ -45,7 +45,7 @@ fun QuestionTitle(title: String = "") {
                 text = title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.W600,
-                fontFamily = Fonts.poppinsFamily
+                fontFamily = poppinsFamily()
             )
         }
     }

@@ -3,6 +3,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -10,8 +11,15 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
     id("org.jetbrains.kotlin.plugin.serialization")
 }
+
+compose.resources {
+    publicResClass = true
+    generateResClass = auto
+}
+
 
 kotlin {
     androidTarget {
@@ -21,6 +29,7 @@ kotlin {
         }
     }
 
+    val xcf = XCFramework()
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,6 +37,7 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "composeApp"
+            xcf.add(this)
             isStatic = true
         }
     }
@@ -63,43 +73,35 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.ktor.client.core)
+            implementation(libs.kotlin.stdlib)
+
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings)
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.navigation.compose)
+
+            implementation(project.dependencies.platform(libs.ktor.bom))
+            implementation(libs.bundles.ktor.common)
+
         }
 
         androidMain.dependencies {
-            // Core
-            implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.lifecycle.runtime.ktx)
             implementation(libs.androidx.activity.compose)
-
-            // Compose BOM
-            implementation(project.dependencies.platform(libs.androidx.compose.bom))
-            implementation(libs.androidx.ui)
-            implementation(libs.androidx.ui.graphics)
-            implementation(libs.androidx.ui.tooling.preview)
-            implementation(libs.androidx.material3)
-            implementation(libs.androidx.material3.window.size.class1)
-            implementation(libs.androidx.compose.runtime.livedata)
-
-            // Datastore
+            implementation(compose.preview)
             implementation(libs.androidx.datastore.preferences)
+            implementation(project.dependencies.platform(libs.ktor.bom))
+            implementation(libs.ktor.client.okhttp)
+        }
 
-            // Serialization
-            implementation(libs.kotlinx.serialization.json)
-
-            // Ktor
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.logging)
+        iosMain.dependencies {
+            implementation(project.dependencies.platform(libs.ktor.bom))
+            implementation(libs.ktor.client.darwin)
         }
 
         wasmJsMain.dependencies {
-            implementation(libs.kotlinx.serialization.json)
+            implementation(project.dependencies.platform(libs.ktor.bom))
+            implementation(libs.ktor.client.js)
         }
     }
 }

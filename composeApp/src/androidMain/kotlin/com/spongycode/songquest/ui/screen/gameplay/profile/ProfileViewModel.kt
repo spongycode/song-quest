@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spongycode.songquest.data.model.auth.UserModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
-import com.spongycode.songquest.domain.repository.AuthRepository
+import com.spongycode.songquest.repository.AuthRepository
 import com.spongycode.songquest.domain.repository.DatastoreRepository
 import com.spongycode.songquest.util.ValidationHelper
 import kotlinx.coroutines.flow.MutableSharedFlow

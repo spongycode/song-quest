@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants.LARGE_HEIGHT
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.bounceClick
 
 @Preview
@@ -65,7 +65,7 @@ fun OptionField(
                 color = Color.Black,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-                fontFamily = poppinsFamily()
+                fontFamily = defaultFontFamily
             )
             iconId?.let { painterResource(id = it) }?.let {
                 Icon(

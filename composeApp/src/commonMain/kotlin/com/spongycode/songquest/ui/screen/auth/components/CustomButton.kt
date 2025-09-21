@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.bounceClick
 
 @Composable
@@ -39,7 +39,7 @@ fun CustomButton(
             color = Color.White,
             modifier = Modifier.padding(8.dp),
             text = displayText,
-            fontFamily = poppinsFamily(),
+            fontFamily = defaultFontFamily,
             fontWeight = FontWeight.W600,
             fontSize = 15.sp
         )

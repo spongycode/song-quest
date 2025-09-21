@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.R
 import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import song_quest.composeapp.generated.resources.Res
 import song_quest.composeapp.generated.resources.bollywood_banner
 import song_quest.composeapp.generated.resources.desi_hip_hop_banner
@@ -128,7 +128,7 @@ fun GameOverDisplayCard(
                             Text(
                                 text = "Score: ", fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium,
-                                fontFamily = poppinsFamily(),
+                                fontFamily = defaultFontFamily,
                                 color = Color.White
                             )
                             Text(
@@ -136,7 +136,7 @@ fun GameOverDisplayCard(
                                 fontSize = 30.sp,
                                 color = Color.White,
                                 fontWeight = FontWeight.W600,
-                                fontFamily = poppinsFamily()
+                                fontFamily = defaultFontFamily
                             )
                         }
                         Text(
@@ -144,7 +144,7 @@ fun GameOverDisplayCard(
                             fontSize = 18.sp,
                             color = Color.White,
                             fontWeight = FontWeight.Medium,
-                            fontFamily = poppinsFamily()
+                            fontFamily = defaultFontFamily
                         )
                     }
                     Row(
@@ -154,7 +154,7 @@ fun GameOverDisplayCard(
                         Text(
                             text = "# ", fontSize = 25.sp,
                             fontWeight = FontWeight.W600,
-                            fontFamily = poppinsFamily(),
+                            fontFamily = defaultFontFamily,
                             color = Color.White
                         )
 
@@ -167,7 +167,7 @@ fun GameOverDisplayCard(
                             },
                             fontSize = 22.sp,
                             fontWeight = FontWeight.W600,
-                            fontFamily = poppinsFamily(),
+                            fontFamily = defaultFontFamily,
                             color = Color.White
                         )
                     }

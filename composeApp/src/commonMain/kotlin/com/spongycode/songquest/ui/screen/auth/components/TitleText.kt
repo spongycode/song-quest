@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 
 @Composable
 fun TitleText(title: String) {
@@ -13,7 +13,7 @@ fun TitleText(title: String) {
         text = title,
         fontSize = 30.sp,
         fontWeight = FontWeight.W600,
-        fontFamily = poppinsFamily(),
+        fontFamily = defaultFontFamily,
         color = Color.Black
     )
 }

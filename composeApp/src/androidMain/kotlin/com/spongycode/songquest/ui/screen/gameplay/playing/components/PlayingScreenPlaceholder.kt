@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import song_quest.composeapp.generated.resources.Res
 import song_quest.composeapp.generated.resources.bollywood_banner
 import song_quest.composeapp.generated.resources.desi_hip_hop_banner
@@ -44,7 +44,7 @@ fun PlayingScreenPlaceholder(
             fontSize = 25.sp,
             color = MaterialTheme.colorScheme.background,
             fontWeight = FontWeight.W600,
-            fontFamily = poppinsFamily()
+            fontFamily = defaultFontFamily
         )
         Image(
             modifier = Modifier

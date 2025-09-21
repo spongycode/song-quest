@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
@@ -88,7 +88,7 @@ fun SplashScreen(
                 text = "Authenticating  ",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Medium,
-                fontFamily = poppinsFamily(),
+                fontFamily = defaultFontFamily,
                 color = Color.White
             )
             val strokeWidth = 3.dp

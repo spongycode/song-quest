@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.spongycode.songquest.getScreenWidth
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.bounceClick
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -79,7 +79,7 @@ fun CategorySelector(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.W600,
                 color = Color.White,
-                fontFamily = poppinsFamily()
+                fontFamily = defaultFontFamily
             )
         }
     }

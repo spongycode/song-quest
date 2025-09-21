@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.spongycode.songquest.getScreenWidth
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.MEDIUM_HEIGHT
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.bounceClick
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -66,7 +66,7 @@ fun CardInfo(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,
-                fontFamily = poppinsFamily()
+                fontFamily = defaultFontFamily
             )
             Image(
                 modifier = Modifier.size(MEDIUM_HEIGHT + 10.dp),

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 
 @Composable
 fun CustomAnnotatedString(
@@ -25,7 +25,7 @@ fun CustomAnnotatedString(
             withStyle(
                 style = SpanStyle(
                     color = MaterialTheme.colorScheme.primary,
-                    fontFamily = poppinsFamily()
+                    fontFamily = defaultFontFamily
                 )
             ) {
                 append(str1)
@@ -37,7 +37,7 @@ fun CustomAnnotatedString(
             withStyle(
                 style = SpanStyle(
                     color = Color(0xFF267BC4), textDecoration = TextDecoration.Underline,
-                    fontFamily = poppinsFamily(), fontWeight = FontWeight.W600
+                    fontFamily = defaultFontFamily, fontWeight = FontWeight.W600
                 )
             ) {
                 append(str2)

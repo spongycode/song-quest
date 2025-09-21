@@ -32,7 +32,7 @@ import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.ui.theme.OptionLightYellow
 import com.spongycode.songquest.util.CategoryConvertor
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.TimesAgo
 
 
@@ -123,7 +123,7 @@ fun RowScope.NormalText(
         fontWeight = if (title) FontWeight.W600 else FontWeight.W500,
         textAlign = alignment,
         fontSize = 18.sp,
-        fontFamily = poppinsFamily()
+        fontFamily = defaultFontFamily
     )
 }
 
@@ -146,7 +146,7 @@ fun RowScope.CategoryDateText(
             fontWeight = FontWeight.W600,
             textAlign = alignment,
             fontSize = 16.sp,
-            fontFamily = poppinsFamily()
+            fontFamily = defaultFontFamily
         )
         Text(
             text = time,
@@ -154,7 +154,7 @@ fun RowScope.CategoryDateText(
             textAlign = alignment,
             fontSize = 12.sp,
             color = Color.Gray,
-            fontFamily = poppinsFamily()
+            fontFamily = defaultFontFamily
         )
     }
 }

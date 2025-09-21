@@ -32,7 +32,7 @@ import com.spongycode.songquest.util.Constants.LEADERBOARD_SCREEN
 import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
 import com.spongycode.songquest.util.Constants.PROFILE_SCREEN
 import com.spongycode.songquest.util.Constants.SMALL_HEIGHT
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -101,7 +101,7 @@ private fun HomeScreen(
             text = "Pick a category",
             fontSize = 20.sp,
             fontWeight = FontWeight.W600,
-            fontFamily = poppinsFamily()
+            fontFamily = defaultFontFamily
         )
 
         Box {

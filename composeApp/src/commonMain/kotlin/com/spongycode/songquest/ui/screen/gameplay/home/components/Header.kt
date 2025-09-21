@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import org.jetbrains.compose.resources.painterResource
 import song_quest.composeapp.generated.resources.Res
 import song_quest.composeapp.generated.resources.baseline_account_circle_24
@@ -41,7 +41,7 @@ fun Header(
             text = "Hi, $username",
             fontSize = 22.sp,
             fontWeight = FontWeight.W600,
-            fontFamily = poppinsFamily()
+            fontFamily = defaultFontFamily
         )
 
         Icon(

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import org.jetbrains.compose.resources.painterResource
 import song_quest.composeapp.generated.resources.Res
 import song_quest.composeapp.generated.resources.baseline_visibility_24
@@ -57,13 +57,13 @@ fun CustomTextField(
                 onValueChange(it)
             },
             label = {
-                Text(text = labelText, fontFamily = poppinsFamily())
+                Text(text = labelText, fontFamily = defaultFontFamily)
             },
             placeholder = {
                 Text(
                     color = MaterialTheme.colorScheme.inversePrimary,
                     text = placeHolderText,
-                    fontFamily = poppinsFamily()
+                    fontFamily = defaultFontFamily
                 )
             },
             keyboardOptions = KeyboardOptions(
@@ -105,7 +105,7 @@ fun CustomTextField(
             textStyle = TextStyle(
                 fontWeight = FontWeight.W500,
                 fontSize = 18.sp,
-                fontFamily = poppinsFamily()
+                fontFamily = defaultFontFamily
             )
         )
     }

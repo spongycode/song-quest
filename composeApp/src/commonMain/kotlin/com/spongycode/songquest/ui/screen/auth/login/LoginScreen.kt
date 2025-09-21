@@ -42,7 +42,7 @@ import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.FORGOT_PASSWORD_SCREEN
 import com.spongycode.songquest.util.Constants.HOME_SCREEN
 import com.spongycode.songquest.util.Constants.REGISTER_SCREEN
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -147,7 +147,7 @@ fun LoginScreen(
                     text = "Forgot password?",
                     color = Color(0xFF267BC4),
                     textDecoration = TextDecoration.Underline,
-                    fontFamily = poppinsFamily(),
+                    fontFamily = defaultFontFamily,
                     fontWeight = FontWeight.W600,
                     modifier = Modifier
                         .clickable {

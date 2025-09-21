@@ -35,7 +35,7 @@ import com.spongycode.songquest.ui.theme.OptionDarkGreen
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.Constants.BASE_URL
 import com.spongycode.songquest.util.Constants.PLAYING_SCREEN
-import com.spongycode.songquest.util.Fonts.poppinsFamily
+import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.Image.saveBitmapAndGetUri
 import com.spongycode.songquest.util.Image.shareImageUriWithText
 import kotlinx.coroutines.flow.collectLatest
@@ -95,7 +95,7 @@ fun GameOverScreen(
             text = "Game Over",
             fontSize = 30.sp,
             fontWeight = FontWeight.W600,
-            fontFamily = poppinsFamily(),
+            fontFamily = defaultFontFamily,
             color = MaterialTheme.colorScheme.primary
         )
         Column(

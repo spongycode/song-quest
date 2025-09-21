@@ -6,11 +6,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 kotlin {
@@ -27,7 +27,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "composeApp"
             isStatic = true
         }
     }
@@ -66,6 +66,7 @@ kotlin {
             implementation(libs.ktor.client.core)
 
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.navigation.compose)
         }
 
         androidMain.dependencies {
@@ -82,9 +83,6 @@ kotlin {
             implementation(libs.androidx.material3)
             implementation(libs.androidx.material3.window.size.class1)
             implementation(libs.androidx.compose.runtime.livedata)
-
-            // Navigation
-            implementation(libs.androidx.navigation.compose)
 
             // Datastore
             implementation(libs.androidx.datastore.preferences)
@@ -104,7 +102,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
         }
     }
-
 }
 
 

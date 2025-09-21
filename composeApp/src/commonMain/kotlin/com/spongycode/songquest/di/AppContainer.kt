@@ -1,12 +1,14 @@
 package com.spongycode.songquest.di
 
 import com.spongycode.songquest.repository.AuthRepositoryImpl
+import com.spongycode.songquest.repository.GameplayRepositoryImpl
 import com.spongycode.songquest.repository.SettingsRepository
 import com.spongycode.songquest.repository.SettingsRepositoryImpl
 import com.spongycode.songquest.ui.screen.auth.forgot_password.ForgotPasswordViewModel
 import com.spongycode.songquest.ui.screen.auth.login.LoginViewModel
 import com.spongycode.songquest.ui.screen.auth.register.RegisterViewModel
 import com.spongycode.songquest.ui.screen.gameplay.home.HomeViewModel
+import com.spongycode.songquest.ui.screen.gameplay.playing.PlayingViewModel
 import com.spongycode.songquest.ui.screen.starter.SplashViewModel
 import com.spongycode.songquest.util.BasePreferenceManager
 import io.ktor.client.HttpClient
@@ -30,7 +32,7 @@ object AppContainer {
     val loginViewModel by lazy { LoginViewModel(authRepository, settingsRepository) }
     val forgotPasswordViewModel by lazy { ForgotPasswordViewModel(authRepository) }
     val homeViewModel by lazy { HomeViewModel(settingsRepository) }
-//    val playingViewModel by lazy { PlayingViewModel(gameplayRepository, datastoreRepository) }
+    val playingViewModel by lazy { PlayingViewModel(gameplayRepository, settingsRepository) }
 //    val gameOverViewModel by lazy { GameOverViewModel(datastoreRepository, gameplayRepository) }
 //    val profileViewModel by lazy { ProfileViewModel(authRepository, datastoreRepository) }
 //    val historyViewModel by lazy { HistoryViewModel(gameplayRepository, datastoreRepository) }
@@ -40,7 +42,7 @@ object AppContainer {
 //            gameplayRepository
 //        )
 //    }
-//    private val gameplayRepository by lazy { GameplayRepositoryImpl(client) }
+    private val gameplayRepository by lazy { GameplayRepositoryImpl(client) }
     private val authRepository by lazy { AuthRepositoryImpl(client) }
 
     fun init() {

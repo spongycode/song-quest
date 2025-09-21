@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.ui.theme.OptionLightBlue
 import com.spongycode.songquest.util.Constants
 import com.spongycode.songquest.util.defaultFontFamily
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable

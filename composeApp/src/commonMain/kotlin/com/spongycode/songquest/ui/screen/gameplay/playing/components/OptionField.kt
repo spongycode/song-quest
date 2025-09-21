@@ -18,14 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.songquest.util.Constants.LARGE_HEIGHT
-import com.spongycode.songquest.util.defaultFontFamily
 import com.spongycode.songquest.util.bounceClick
+import com.spongycode.songquest.util.defaultFontFamily
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
@@ -35,7 +36,7 @@ fun OptionField(
     onClick: () -> Unit = {},
     fillColor: Color = Color.White,
     tint: Color = Color.Black,
-    iconId: Int? = null
+    iconId: DrawableResource? = null
 ) {
     Surface(
         color = Color.Transparent,
@@ -67,7 +68,7 @@ fun OptionField(
                 fontWeight = FontWeight.Medium,
                 fontFamily = defaultFontFamily
             )
-            iconId?.let { painterResource(id = it) }?.let {
+            iconId?.let { painterResource(resource = it) }?.let {
                 Icon(
                     painter = it,
                     contentDescription = null,

@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.spongycode.songquest.R
 import com.spongycode.songquest.data.model.gameplay.QuestionModel
 import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState
 import com.spongycode.songquest.ui.theme.OptionDarkGreen
@@ -20,6 +19,9 @@ import com.spongycode.songquest.ui.theme.OptionLightGreen
 import com.spongycode.songquest.ui.theme.OptionLightRed
 import com.spongycode.songquest.ui.theme.OptionLightYellow
 import com.spongycode.songquest.util.Constants
+import song_quest.composeapp.generated.resources.Res
+import song_quest.composeapp.generated.resources.baseline_cancel_24
+import song_quest.composeapp.generated.resources.baseline_check_circle_24
 
 @Composable
 fun OptionsArea(
@@ -40,7 +42,7 @@ fun OptionsArea(
                 text = option.value!!,
                 onClick = {
                     if ((optionTapState == OptionTapState.Idle)) {
-                        onTapButton(option.optionid!!)
+                        onTapButton(option.optionid)
                         onCheckAnswer(option.optionid)
                     }
                 },
@@ -63,9 +65,9 @@ fun OptionsArea(
                 iconId = if (option.optionid != tappedButtonId) null else {
                     when (optionTapState) {
                         OptionTapState.Checking -> null
-                        OptionTapState.CorrectAnswer -> R.drawable.baseline_check_circle_24
+                        OptionTapState.CorrectAnswer -> Res.drawable.baseline_check_circle_24
                         OptionTapState.Idle -> null
-                        OptionTapState.WrongAnswer -> R.drawable.baseline_cancel_24
+                        OptionTapState.WrongAnswer -> Res.drawable.baseline_cancel_24
                     }
                 }
             )

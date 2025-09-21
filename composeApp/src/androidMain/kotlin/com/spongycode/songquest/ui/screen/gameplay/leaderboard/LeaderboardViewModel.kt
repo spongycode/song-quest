@@ -6,7 +6,7 @@ import com.spongycode.songquest.data.model.auth.AuthModel
 import com.spongycode.songquest.data.model.gameplay.LeaderboardUsersModel
 import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl
 import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.domain.repository.GameplayRepository
+import com.spongycode.songquest.repository.GameplayRepository
 import com.spongycode.songquest.util.CategoryConvertor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

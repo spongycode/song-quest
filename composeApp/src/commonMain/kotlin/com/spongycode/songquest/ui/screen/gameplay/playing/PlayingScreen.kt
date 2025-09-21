@@ -10,15 +10,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.spongycode.songquest.R
 import com.spongycode.songquest.ui.navigation.LocalNavController
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenPlaceholder
 import com.spongycode.songquest.ui.screen.gameplay.playing.components.PlayingScreenSuccess
 import com.spongycode.songquest.util.ComposeLocalWrapper
 import com.spongycode.songquest.util.Constants.CATEGORY
 import kotlinx.coroutines.flow.collectLatest
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import song_quest.composeapp.generated.resources.Res
+import song_quest.composeapp.generated.resources.error_fetching_question
+import song_quest.composeapp.generated.resources.loading_questions
 
 @Composable
 fun PlayingScreenRoot(
@@ -64,12 +66,12 @@ fun PlayingScreen(
     ) {
         when (uiState.createGameState) {
             CreateGameState.Error -> PlayingScreenPlaceholder(
-                stringResource(R.string.error_fetching_question),
+                stringResource(Res.string.error_fetching_question),
                 category
             )
 
             CreateGameState.Fetching -> PlayingScreenPlaceholder(
-                stringResource(R.string.loading_questions),
+                stringResource(Res.string.loading_questions),
                 category
             )
 

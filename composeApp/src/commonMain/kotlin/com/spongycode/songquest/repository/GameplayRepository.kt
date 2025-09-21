@@ -1,4 +1,4 @@
-package com.spongycode.songquest.domain.repository
+package com.spongycode.songquest.repository
 
 import com.spongycode.songquest.data.model.ApiResponse
 import com.spongycode.songquest.data.model.auth.AuthModel

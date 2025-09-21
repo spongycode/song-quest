@@ -22,6 +22,10 @@ compose.resources {
 
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class) compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {

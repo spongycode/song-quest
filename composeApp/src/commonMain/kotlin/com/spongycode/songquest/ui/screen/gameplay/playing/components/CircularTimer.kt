@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -29,7 +30,7 @@ fun CircularTimer(
 
     val textToDraw = time.toString()
 
-    val style = androidx.compose.ui.text.TextStyle(
+    val style = TextStyle(
         fontSize = 20.sp,
         color = Color.Black,
         background = Color.Transparent,

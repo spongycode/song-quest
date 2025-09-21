@@ -1,15 +1,15 @@
 package com.spongycode.songquest.ui.screen.gameplay.playing
 
-import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spongycode.songquest.AudioPlayer
 import com.spongycode.songquest.data.model.gameplay.CheckAnswerModel
 import com.spongycode.songquest.data.model.gameplay.CreateGameModel
 import com.spongycode.songquest.data.model.gameplay.GameModel
 import com.spongycode.songquest.data.model.gameplay.QuestionModel
-import com.spongycode.songquest.data.repository.DatastoreRepositoryImpl.Companion.accessTokenSession
-import com.spongycode.songquest.domain.repository.DatastoreRepository
-import com.spongycode.songquest.domain.repository.GameplayRepository
+import com.spongycode.songquest.repository.GameplayRepository
+import com.spongycode.songquest.repository.SettingsRepository
+import com.spongycode.songquest.repository.SettingsRepositoryImpl
 import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState.Checking
 import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState.CorrectAnswer
 import com.spongycode.songquest.ui.screen.gameplay.playing.OptionTapState.Idle
@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class PlayingViewModel(
     private val gameplayRepository: GameplayRepository,
-    private val datastoreRepository: DatastoreRepository
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PlayingUiState())
     val uiState = _uiState.asStateFlow()
@@ -36,7 +36,8 @@ class PlayingViewModel(
     private val _viewEffect = MutableSharedFlow<PlayingViewEffect>()
     val viewEffect: SharedFlow<PlayingViewEffect> = _viewEffect.asSharedFlow()
 
-    private var mediaPlayer: MediaPlayer? = MediaPlayer()
+
+    private var audioPlayer = AudioPlayer()
 
     private var timerJob: Job? = null
 
@@ -65,7 +66,7 @@ class PlayingViewModel(
             currentScore = 0f
         )
         viewModelScope.launch {
-            val accessToken = datastoreRepository.getString(accessTokenSession)
+            val accessToken = settingsRepository.getString(SettingsRepositoryImpl.ACCESS_TOKEN_SESSION)
             val res = gameplayRepository.createGame(
                 CreateGameModel(
                     accessToken = accessToken!!,
@@ -95,7 +96,7 @@ class PlayingViewModel(
     private fun checkAnswer(optionId: Int) {
         if (optionId == -1) {
             if (_uiState.value.totalLife == 1) {
-                mediaPlayer?.release()
+                audioPlayer.release()
                 _uiState.value = _uiState.value.copy(
                     isGameOver = true
                 )
@@ -133,7 +134,7 @@ class PlayingViewModel(
                         optionTapState = WrongAnswer
                     )
                     if (_uiState.value.totalLife == 1) {
-                        mediaPlayer?.release()
+                        audioPlayer.release()
                         _uiState.value = _uiState.value.copy(
                             isGameOver = true
                         )
@@ -201,15 +202,11 @@ class PlayingViewModel(
     private fun playCurrentSong() {
         val index = _uiState.value.currentSongIndex
         if (index < _uiState.value.questions.size) {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer()
-            mediaPlayer?.setDataSource(_uiState.value.questions[index].songUrl)
-            mediaPlayer?.prepareAsync()
-            mediaPlayer?.setOnPreparedListener {
-                mediaPlayer?.start()
-                startTimer()
-                mediaPlayer?.isLooping = true
-            }
+            audioPlayer.release()
+            val songUrl = _uiState.value.questions[index].songUrl
+            audioPlayer.setSource(songUrl.toString())
+            audioPlayer.prepareAndPlay(looping = true)
+            startTimer()
         }
     }
 
@@ -220,7 +217,7 @@ class PlayingViewModel(
     }
 
     override fun onCleared() {
-        mediaPlayer?.release()
+        audioPlayer.release()
         super.onCleared()
     }
 }

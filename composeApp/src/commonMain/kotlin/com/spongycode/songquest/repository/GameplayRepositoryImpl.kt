@@ -1,4 +1,4 @@
-package com.spongycode.songquest.data.repository
+package com.spongycode.songquest.repository
 
 import com.spongycode.songquest.data.model.ApiResponse
 import com.spongycode.songquest.data.model.auth.AuthModel
@@ -7,9 +7,8 @@ import com.spongycode.songquest.data.model.gameplay.CreateGameModel
 import com.spongycode.songquest.data.model.gameplay.HistoryModel
 import com.spongycode.songquest.data.model.gameplay.LeaderboardModel
 import com.spongycode.songquest.data.model.gameplay.PlayingModel
-import com.spongycode.songquest.domain.repository.GameplayRepository
-import com.spongycode.songquest.util.Constants.BASE_URL
-import com.spongycode.songquest.util.Network.executeWithRetry
+import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.Network
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -22,9 +21,9 @@ class GameplayRepositoryImpl(
     private val client: HttpClient
 ) : GameplayRepository {
     override suspend fun createGame(createGameModel: CreateGameModel): ApiResponse<PlayingModel>? {
-        return executeWithRetry {
+        return Network.executeWithRetry {
             val res = client.post {
-                url("${BASE_URL}api/mobile/gameplay/create")
+                url("${Constants.BASE_URL}api/mobile/gameplay/create")
                 contentType(ContentType.Application.Json)
                 setBody(createGameModel)
             }
@@ -37,9 +36,9 @@ class GameplayRepositoryImpl(
     }
 
     override suspend fun checkAnswer(checkAnswerModel: CheckAnswerModel): ApiResponse<CheckAnswerModel>? {
-        return executeWithRetry {
+        return Network.executeWithRetry {
             val res = client.post {
-                url("${BASE_URL}api/mobile/gameplay/check")
+                url("${Constants.BASE_URL}api/mobile/gameplay/check")
                 contentType(ContentType.Application.Json)
                 setBody(checkAnswerModel)
             }
@@ -48,9 +47,9 @@ class GameplayRepositoryImpl(
     }
 
     override suspend fun saveGame(checkAnswerModel: CheckAnswerModel): ApiResponse<PlayingModel>? {
-        return executeWithRetry {
+        return Network.executeWithRetry {
             val res = client.post {
-                url("${BASE_URL}api/mobile/gameplay/save")
+                url("${Constants.BASE_URL}api/mobile/gameplay/save")
                 contentType(ContentType.Application.Json)
                 setBody(checkAnswerModel)
             }
@@ -59,9 +58,9 @@ class GameplayRepositoryImpl(
     }
 
     override suspend fun history(authModel: AuthModel): ApiResponse<HistoryModel>? {
-        return executeWithRetry {
+        return Network.executeWithRetry {
             val res = client.post {
-                url("${BASE_URL}api/mobile/gameplay/history")
+                url("${Constants.BASE_URL}api/mobile/gameplay/history")
                 contentType(ContentType.Application.Json)
                 setBody(authModel)
             }
@@ -70,9 +69,9 @@ class GameplayRepositoryImpl(
     }
 
     override suspend fun leaderboard(authModel: AuthModel): ApiResponse<List<LeaderboardModel>>? {
-        return executeWithRetry {
+        return Network.executeWithRetry {
             val res = client.post {
-                url("${BASE_URL}api/mobile/gameplay/highscore")
+                url("${Constants.BASE_URL}api/mobile/gameplay/highscore")
                 contentType(ContentType.Application.Json)
                 setBody(authModel)
             }

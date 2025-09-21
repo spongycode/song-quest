@@ -1,6 +1,5 @@
 package com.spongycode.songquest.ui.screen.gameplay.playing.components
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -24,7 +23,6 @@ class CircularTransitionData(
     val color by color
 }
 
-@SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun updateCircularTransitionData(
     remainingTime: Long,

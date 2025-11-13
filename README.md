@@ -1,3 +1,14 @@
+# 🚧 Under Development
+
+This repository is currently in active development to support **multiplatform** targets:
+- Android  
+- iOS  
+- Web  
+
+For more details and latest progress, check out the [`multiplatform`](https://github.com/spongycode/song-quest/tree/multiplatform) branch.
+
+<br/>
+
 <div align="center">
     <img src="assets/app_logo.jpg" width="128" height="128" style="display: block; margin: 0 auto"/>
     <h1>Song Quest 🎶</h1>

@@ -1,0 +1,187 @@
+package com.spongycode.songquest.ui.screen.gameplay.gameover.components
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.spongycode.songquest.data.model.gameplay.GameModel
+import com.spongycode.songquest.getScreenHeight
+import com.spongycode.songquest.getScreenWidth
+import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.defaultFontFamily
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import song_quest.composeapp.generated.resources.Res
+import song_quest.composeapp.generated.resources.bollywood_banner
+import song_quest.composeapp.generated.resources.desi_hip_hop_banner
+import song_quest.composeapp.generated.resources.hip_hop_banner
+import song_quest.composeapp.generated.resources.hollywood_banner
+
+@Composable
+fun GameOverDisplayCard(
+    modifier: Modifier = Modifier,
+    game: GameModel,
+    username: String
+) {
+    val width = (getScreenWidth()) * 3 / 4
+    val height = getScreenHeight() / 2
+    Box(
+        contentAlignment = Alignment.BottomEnd,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
+            .width(width.dp)
+            .height(height.dp)
+            .padding(25.dp)
+    ) {
+        Card(
+            modifier = Modifier
+                .shadow(
+                    20.dp,
+                    RoundedCornerShape(Constants.SMALL_HEIGHT),
+                    true,
+                    Color.Yellow,
+                    Color.Yellow
+                )
+                .fillMaxSize()
+                .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Box(
+                modifier = Modifier.background(Color.Red),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Image(
+                    modifier = Modifier
+                        .background(Color.Red),
+                    painter = painterResource(
+                        resource = when (game.category) {
+                            Constants.BOLLYWOOD_CODE -> {
+                                Res.drawable.bollywood_banner
+                            }
+
+                            Constants.HOLLYWOOD_CODE -> {
+                                Res.drawable.hollywood_banner
+                            }
+
+                            Constants.DESI_HIP_HOP_CODE -> {
+                                Res.drawable.desi_hip_hop_banner
+                            }
+
+                            else -> {
+                                Res.drawable.hip_hop_banner
+                            }
+                        }
+                    ),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = null
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(Constants.SMALL_HEIGHT))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color(0xFF000000)),
+                                startY = 0f,
+                                endY = 200f
+                            )
+                        )
+                        .padding(30.dp)
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(Constants.SMALL_HEIGHT))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Score: ", fontSize = 22.sp,
+                                fontWeight = FontWeight.Medium,
+                                fontFamily = defaultFontFamily,
+                                color = Color.White
+                            )
+                            Text(
+                                text = game.score?.toInt().toString(),
+                                fontSize = 30.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.W600,
+                                fontFamily = defaultFontFamily
+                            )
+                        }
+                        Text(
+                            text = "@$username",
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = defaultFontFamily
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.padding(bottom = 0.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "# ", fontSize = 25.sp,
+                            fontWeight = FontWeight.W600,
+                            fontFamily = defaultFontFamily,
+                            color = Color.White
+                        )
+
+                        Text(
+                            text = when (game.category) {
+                                Constants.BOLLYWOOD_CODE -> Constants.BOLLYWOOD_DISPLAY_TEXT
+                                Constants.HOLLYWOOD_CODE -> Constants.HOLLYWOOD_DISPLAY_TEXT
+                                Constants.DESI_HIP_HOP_CODE -> Constants.DESI_HIP_HOP_DISPLAY_TEXT
+                                else -> Constants.HIP_HOP_DISPLAY_TEXT
+                            },
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.W600,
+                            fontFamily = defaultFontFamily,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@Preview
+@Composable
+private fun PreviewGameOverDisplayCard() {
+    GameOverDisplayCard(
+        game = GameModel().dummy(),
+        username = "dummy_user"
+    )
+}

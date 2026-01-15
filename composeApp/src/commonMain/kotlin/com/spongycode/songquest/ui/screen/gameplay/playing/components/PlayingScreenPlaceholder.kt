@@ -1,0 +1,75 @@
+package com.spongycode.songquest.ui.screen.gameplay.playing.components
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.spongycode.songquest.util.Constants
+import com.spongycode.songquest.util.defaultFontFamily
+import song_quest.composeapp.generated.resources.Res
+import song_quest.composeapp.generated.resources.bollywood_banner
+import song_quest.composeapp.generated.resources.desi_hip_hop_banner
+import song_quest.composeapp.generated.resources.hip_hop_banner
+import song_quest.composeapp.generated.resources.hollywood_banner
+
+@Composable
+fun PlayingScreenPlaceholder(
+    text: String,
+    category: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Red),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            modifier = Modifier.padding(top = 200.dp),
+            text = text,
+            fontSize = 25.sp,
+            color = MaterialTheme.colorScheme.background,
+            fontWeight = FontWeight.W600,
+            fontFamily = defaultFontFamily
+        )
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Red),
+            painter = painterResource(
+                resource = when (category) {
+                    Constants.BOLLYWOOD_CODE -> {
+                        Res.drawable.bollywood_banner
+                    }
+
+                    Constants.HOLLYWOOD_CODE -> {
+                        Res.drawable.hollywood_banner
+                    }
+
+                    Constants.DESI_HIP_HOP_CODE -> {
+                        Res.drawable.desi_hip_hop_banner
+                    }
+
+                    else -> {
+                        Res.drawable.hip_hop_banner
+                    }
+                }
+            ), contentDescription = null,
+            contentScale = ContentScale.FillWidth
+        )
+    }
+}
